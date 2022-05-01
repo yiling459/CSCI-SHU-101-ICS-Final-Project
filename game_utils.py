@@ -12,7 +12,7 @@ SERVER = (CHAT_IP, CHAT_PORT)
 #maybe we can add something like menu here
 
 S_OFFLINE = 0
-S_CONNECTED = 1
+S_LOGGEDIN = 1
 S_PAIRING = 2
 S_PLAYING = 3
 
@@ -63,13 +63,12 @@ def myrecv(s):
             print('disconnected')
             break
         msg += text
-    #print ('received '+message)
     return (msg)
 
-def label_time(msg):
-    ctime = time.strftime('%d.%m.%y,%H:%M:%S', time.localtime())
-    return [ctime, msg]
-    
+def label_time(msg, label):
+    current_time = time.strftime('%d.%m.%y,%H:%M:%S', time.localtime())
+    msg[label] = current_time
+
 #def text_proc(text, user):
     # ctime = time.strftime('%d.%m.%y,%H:%M', time.localtime())
     # # message goes directly to screen
