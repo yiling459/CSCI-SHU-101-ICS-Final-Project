@@ -54,7 +54,7 @@ class PlayerSM:
 
     # def disconnect(self):
 
-    def proc(self, my_action, peer_action):
+    def proc(self, my_action, room_reply):
         # my_action here replaces my_msg
         self.out_msg = ''
 #==============================================================================
@@ -63,21 +63,61 @@ class PlayerSM:
 #==============================================================================
         if self.state == S_LOGGEDIN:
             if len(my_action) > 0:
-                # my_action is a string
-                if my_action[0] == 'j':
-                    # 'j' means join room
-                    room = my_action[1:]
+                # my_action is a dictionary
+                if my_action['action'] == 'join':
+                    # 'join' means join room
+                    room = my_action['room']
                     if self.join_room(room) == True:
                         self.state = S_PAIRING
                         # self.out_msg += 
                     else:
                         self.out_msg += 'Fail to join the room\n'
                 
-                elif my_action[0] == 'c':
+                elif my_action['action'] == 'create':
                     # 'c' means create room
-                    room_name = my_action[1:]
+                    room_name = my_action['room_name']
                     if self.create_room(room_name) == True:
                         self.state = S_PAIRING
+
+#==============================================================================
+# Start pairing
+#==============================================================================
+        elif self.state == S_PAIRING:
+            if len(my_action) > 0:
+                mysend(self.s, json.dumps({'action':'start_game', 'from': self.me}))
+            if len(room_reply) > 0:
+                room_reply = json.loads(room_reply)
+                if room_reply['action'] == 'denied':
+                    self.out_msg += 'You can only start the game if there are more than two people'
+                elif room_reply['action'] == 'set_the_game':
+                    self.state = S_SETTING
+                elif room_reply['action'] ==  'start_the_game':
+                    self.state = S_PLAYING
+
+#==============================================================================
+# Choose to create question. Handle the stage S_SETTING
+#==============================================================================
+        elif self.state == S_SETTING:
+            if len(my_action) > 0:
+                if my_action['action'] == 'set_question':
+                    # questions and answers
+                    #change mysend later
+                    mysend(self.s, json.dumps({'action':'set_question', 'from': self.me}))
+                elif my_action['action'] == 'answer_question':
+                    mysend(self.s, json.dumps({'action':'answer_question', 'from': self.me}))
+
+            elif len(room_reply) > 0:
+                if room_reply['action'] == 'All_set':
+                    self.state = S_PLAYING
+
+#==============================================================================
+# Finally, the game can start!
+#==============================================================================
+        # elif self.state == S_PLAYING:
+
+
+
+
 
 
 
