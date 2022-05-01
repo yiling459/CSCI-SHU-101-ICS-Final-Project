@@ -11,11 +11,21 @@ def relative_to_assets(path: str) -> Path:
 class GUI:
     def __init__(self, send, recv, state, s):
         self.window = Tk()
+        #init the canvas here
         self.window.geometry("1200x800")
-        self.window.configure(bg = "#FFFFFF")
+        self.window.configure(bg = "#5294D0")
         # self.Window.withdraw()
         self.canvas_width = 1200.0
         self.canvas_height = 800.0
+
+        # import all elements
+        self.entry_image = PhotoImage(file=relative_to_assets("TextBox.png"))
+        # image of buttons, ls means light slim, db means dark bold
+        self.button_ls_image = PhotoImage(file=relative_to_assets("Light_Button_Slim.png"))
+        self.button_ds_image = PhotoImage(file=relative_to_assets("Dark_Button_Slim.png"))
+        self.button_lb_image = PhotoImage(file=relative_to_assets("Light_Button_Bold.png"))
+        self.button_db_image = PhotoImage(file=relative_to_assets("Dark_Button_Bold.png"))
+
         self.send = send
         self.recv = recv
         self.state = state
@@ -50,11 +60,10 @@ class GUI:
                             text="ENTER YOUR NAME",
                             fill="#A9CEF0",
                             font=("Futura Medium", 12 * -1))
-        name_entry_image = PhotoImage(file=relative_to_assets("TextBox.png"))
         canvas.create_image(435,
                             484,
                             anchor = 'nw',
-                            image=name_entry_image)
+                            image=self.entry_image)
         name_entry = Entry(bd=0,
                             bg="#D5E8F8",
                             font=("Futura Medium", 15 * -1),
@@ -65,16 +74,30 @@ class GUI:
                             height=53.0)
 
         # create the button for creating a new room
-        create_room_button_image = PhotoImage(file=relative_to_assets("Light_Button_Slim.png"))
-        create_room_button = Button(image=create_room_button_image,
+        canvas.create_text(533.4,
+                            569.75,
+                            anchor="nw",
+                            text="New Room",
+                            fill="#FFFFFF",
+                            font=("Futura Medium", 12 * -1))
+        
+        # canvas.create_image(435,
+        #                     556,
+        #                     anchor = 'nw',
+        #                     image=self.button_ls_image)
+
+        create_room_button = Button(
+                            image=self.button_ls_image,
                             borderwidth=0,
                             highlightthickness=0,
                             command=lambda: print("button_1 clicked"),
                             relief="flat")
+ 
         create_room_button.place(x=435,
                                 y=556,
                                 width = 336,
                                 height = 55)
+        
         
 
         
