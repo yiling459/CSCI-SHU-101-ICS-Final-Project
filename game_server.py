@@ -29,9 +29,12 @@ class Server:
         # self.sonnet_f.close()
 
     def new_player(self, sock):
-        # add to all sockets and to new clients
+        # add to all sockets and to new players
         print('new player...')
         sock.setblocking(0)
-        self.new_clients.append(sock)
+        self.new_players.append(sock)
         self.all_sockets.append(sock)
+
+
+
 
