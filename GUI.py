@@ -25,7 +25,6 @@ class GUI:
 
 
     def start_page(self):
-        
         # create the canvas
         canvas = Canvas(
             self.window,
@@ -66,11 +65,24 @@ class GUI:
                             height=53.0)
 
         # create the button for creating a new room
-        button_create_image = PhotoImage(file=relative_to_assets("Light_Button_Slim.png"))
-        canvas.create_image(435,556,anchor = 'nw',image=button_create_image)
+        create_room_button_image = PhotoImage(file=relative_to_assets("Light_Button_Slim.png"))
+        create_room_button = Button(image=create_room_button_image,
+                            borderwidth=0,
+                            highlightthickness=0,
+                            command=lambda: print("button_1 clicked"),
+                            relief="flat")
+        create_room_button.place(x=435,
+                                y=556,
+                                width = 336,
+                                height = 55)
+        
+
         
 
         self.window.mainloop()
+    
+    def run(self):
+        self.start_page()    
 
 if __name__ == "__main__":
     g = GUI('','','','')
