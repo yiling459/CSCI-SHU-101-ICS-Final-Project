@@ -18,7 +18,7 @@ S_PLAYING = 3
 
 SIZE_SPEC = 5
 
-CHAT_WAIT = 0.2
+# CHAT_WAIT = 0.2
 
 def print_state(state):
     print('**** State *****::::: ')
@@ -45,8 +45,31 @@ def mysend(s, msg):
             break
         total_sent += sent
 
-#def myrecv(s)
+def myrecv(s):
+    # receive size first
+    size = ''
+    while len(size) < SIZE_SPEC:
+        text = s.recv(SIZE_SPEC - len(size)).decode()
+        if not text:
+            print('disconnected')
+            return('')
+        size += text
+    size = int(size)
+    # now receive message
+    msg = ''
+    while len(msg) < size:
+        text = s.recv(size-len(msg)).decode()
+        if text == b'':
+            print('disconnected')
+            break
+        msg += text
+    #print ('received '+message)
+    return (msg)
 
+def label_time(msg):
+    ctime = time.strftime('%d.%m.%y,%H:%M:%S', time.localtime())
+    return [ctime, msg]
+    
 #def text_proc(text, user):
     # ctime = time.strftime('%d.%m.%y,%H:%M', time.localtime())
     # # message goes directly to screen
