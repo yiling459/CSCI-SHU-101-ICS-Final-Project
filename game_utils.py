@@ -25,10 +25,12 @@ def print_state(state):
     print('**** State *****::::: ')
     if state == S_OFFLINE:
         print('Offline')
-    elif state == S_CONNECTED:
-        print('Connected')
+    elif state == S_LOGGEDIN:
+        print('Logged in')
     elif state == S_PAIRING:
         print('Paring other players')
+    elif state == S_SETTING:
+        print('Setting the game')
     elif state == S_PLAYING:
         print('Gaming')
     else:
