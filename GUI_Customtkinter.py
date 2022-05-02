@@ -106,11 +106,6 @@ class GUI:
             height=56
             )
 
-        # new_room_button.place(
-        #     relx=0.5,
-        #     rely=0.5,
-        #     anchor=tkinter.CENTER)
-        
         new_room_button.pack(padx=10,pady=10)
 
         # create join room button
