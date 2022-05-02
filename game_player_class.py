@@ -2,7 +2,7 @@ import socket
 import sys
 from game_utils import *
 import player_state_machine as psm
-from GUI import *
+from GUI_Customtkinter import *
 
 class Player:
     def __init__(self, args):
