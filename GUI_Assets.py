@@ -13,7 +13,23 @@ def slim_button(master, button_color, text, text_color):
         text_color=text_color,
         width=336,
         height=56
-    )
+        )
+    button.pack(padx=10,pady=10)
+    return button
+
+def bold_button(master, button_color, text, text_color):
+    button = customtkinter.CTkButton(
+        master = master,
+        bg_color="#000000",
+        fg_color=button_color,
+        border_width=0,
+        corner_radius=28,
+        text=text,
+        text_font= ("Futura Medium", 36 * -1),
+        text_color=text_color,
+        width=336,
+        height=110
+        )
     button.pack(padx=10,pady=10)
     return button
 
