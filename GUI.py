@@ -1,6 +1,7 @@
 from pathlib import Path
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+# from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import *
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./ASSETS")
@@ -80,11 +81,6 @@ class GUI:
                             text="New Room",
                             fill="#FFFFFF",
                             font=("Futura Medium", 12 * -1))
-        
-        # canvas.create_image(435,
-        #                     556,
-        #                     anchor = 'nw',
-        #                     image=self.button_ls_image)
 
         create_room_button = Button(
                             image=self.button_ls_image,
@@ -97,6 +93,15 @@ class GUI:
                                 y=556,
                                 width = 336,
                                 height = 55)
+
+        
+
+        # frame=Frame(self.window)
+        # frame.config(bg="#96C3ED")
+        # label=Label(frame,text="Label")
+        # label.pack()
+        # frame.place(x=533,y=570)
+                            
         
         
 
