@@ -74,17 +74,17 @@ class GUI:
 
         # create new room button
         new_room_button = slim_button(frame, self.color_secondary, "New Room", self.color_on_secondary)
-        new_room_button.config(command = lambda: print(name_entry.get()))
+        new_room_button.config(command = lambda: self.create_page(name_entry.get()))
         
 
         # create join room button
         join_room_button = slim_button(frame, self.color_primary,"Join Room", self.color_on_primary)
-        join_room_button.config(command = lambda: print(name_entry.get()))
+        join_room_button.config(command = lambda: self.join_page(name_entry.get()))
           
         self.window.mainloop()
 
 
-    def create_page(self):
+    def create_page(self, player_name):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#FFFFFF",
@@ -127,7 +127,7 @@ class GUI:
         self.window.mainloop()
 
 
-    def join_page(self):
+    def join_page(self, player_name):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#FFFFFF",
@@ -301,9 +301,9 @@ class GUI:
 
 if __name__ == "__main__":
     g = GUI('','','','')
-    # g.start_page()
-    g.join_page()
+    g.start_page()
     # g.create_page()
+    # g.join_page()
     # g.choose_identity_page()
     # g.confirm_respondent_page()
     # g.confirm_question_setter_page()
