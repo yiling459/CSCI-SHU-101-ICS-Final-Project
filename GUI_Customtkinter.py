@@ -158,7 +158,7 @@ class GUI:
         frame.place(x=900,y=264,anchor="n")
 
         # create entry
-        room_name_entry = labeled_entry(frame,"ENTER YOUR NAME",self.color_tertiary,self.color_on_tertiary)
+        room_name_entry = labeled_entry(frame,"ENTER ROOM NAME",self.color_tertiary,self.color_on_tertiary)
         
 
         # create continue button
@@ -212,16 +212,98 @@ class GUI:
           
         self.window.mainloop()
 
+
+    def confirm_respondent_page(self):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#FFFFFF",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+
+
+        # create the background image
+        background_image = tkinter.PhotoImage(file = relative_to_assets("confirm_respondent_background.png"))
+        canvas.create_image(0,
+                            0,
+                            anchor = 'nw',
+                            image = background_image)
+
+
+        # make the frame for contents
+        frame = customtkinter.CTkFrame(
+            master = self.window,
+            width=417,
+            height=431,
+            bg_color="#000000",
+            fg_color="#000000",
+            )
+        frame.place(relx=0.5,y=550,anchor="n")
+ 
+
+         # create continue button
+        continue_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
+        continue_button.config(command = lambda: print(room_name_entry.get()))
+
+          
+        self.window.mainloop()
+
+
+    def confirm_question_setter_page(self):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#FFFFFF",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+
+
+        # create the background image
+        background_image = tkinter.PhotoImage(file = relative_to_assets("confirm_question_setter_background.png"))
+        canvas.create_image(0,
+                            0,
+                            anchor = 'nw',
+                            image = background_image)
+
+
+        # make the frame for contents
+        frame = customtkinter.CTkFrame(
+            master = self.window,
+            width=417,
+            height=431,
+            bg_color="#000000",
+            fg_color="#000000",
+            )
+        frame.place(relx=0.5,y=550,anchor="n")
+ 
+
+         # create continue button
+        continue_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
+        continue_button.config(command = lambda: print(room_name_entry.get()))
+
+          
+        self.window.mainloop()
     
+
     def run(self):
         self.start_page()    
         self.join_page()
         self.create_page()
         self.choose_identity_page()
+        self.confirm_respondent_page()
+        self.confirm_question_setter_page()
 
 if __name__ == "__main__":
     g = GUI('','','','')
     # g.start_page()
     # g.join_page()
     # g.create_page()
-    g.choose_identity_page()
+    # g.choose_identity_page()
+    # g.confirm_respondent_page()
+    g.confirm_question_setter_page()
