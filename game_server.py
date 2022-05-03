@@ -105,7 +105,7 @@ class Server:
                     msg = json.dumps(
                         {"action": "create", "status": "duplicate"})
                 mysend(from_sock, msg)
-            if msg["action"] == "join":
+            elif msg["action"] == "join":
                 room_name = msg["name"]
                 from_name = self.logged_sock2name[from_sock]
                 # check whether the room exists
@@ -125,6 +125,26 @@ class Server:
                     msg = json.dumps(
                         {"action": "join", "status": "no such room"})
                 mysend(from_sock, msg)
+# ==============================================================================
+# decide whether to set the game base on the number of players
+# ==============================================================================
+            elif msg["action"] == "start the game":
+                player_num = len(self.room.room_members)
+                if player_num < 2:
+                    msg = json.dumps(
+                        {"action": "denied", "reason": "there must be over two players"})
+                elif player_num == 2:
+                    msg = json.dumps(
+                        {"action": "all set"})
+                elif player_num > 2:
+                    msg = json.dumps(
+                        {"action": "set the game"})
+
+# ==============================================================================
+# set the game
+# ==============================================================================
+            elif msg["action"] == "set questions":
+                pass
 
 
 
