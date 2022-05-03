@@ -86,14 +86,14 @@ class PlayerSM:
 #==============================================================================
         elif self.state == S_PAIRING:
             if len(my_action) > 0:
-                mysend(self.s, json.dumps({'action':'start_game', 'from': self.me}))
+                mysend(self.s, json.dumps({'action':'start the game', 'from': self.me}))
             if len(room_reply) > 0:
                 room_reply = json.loads(room_reply)
                 if room_reply['action'] == 'denied':
                     self.out_msg += 'You can only start the game if there are more than two people'
-                elif room_reply['action'] == 'set_the_game':
+                elif room_reply['action'] == 'set the game':
                     self.state = S_SETTING
-                elif room_reply['action'] ==  'start_the_game':
+                elif room_reply['action'] ==  'all set':
                     self.state = S_PLAYING
 
 #==============================================================================
@@ -101,15 +101,15 @@ class PlayerSM:
 #==============================================================================
         elif self.state == S_SETTING:
             if len(my_action) > 0:
-                if my_action['action'] == 'set_question':
+                if my_action['action'] == 'set questions':
                     # questions and answers
                     #change mysend later
-                    mysend(self.s, json.dumps({'action':'set_question', 'from': self.me}))
+                    mysend(self.s, json.dumps({'action':'set questions', 'from': self.me}))
                 elif my_action['action'] == 'answer_question':
-                    mysend(self.s, json.dumps({'action':'answer_question', 'from': self.me}))
+                    mysend(self.s, json.dumps({'action':'answer questions', 'from': self.me}))
 
             elif len(room_reply) > 0:
-                if room_reply['action'] == 'All_set':
+                if room_reply['action'] == 'all set':
                     self.state = S_PLAYING
 
 #==============================================================================
