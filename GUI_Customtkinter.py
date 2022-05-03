@@ -112,7 +112,7 @@ class GUI:
             bg_color="#000000",
             fg_color="#000000",
             )
-        frame.place(x=900,y=264,anchor="n")
+        frame.place(x=932.5,y=295,anchor="n")
 
         # create entry
         room_name_entry = labeled_entry(frame,"ENTER ROOM NAME",self.color_tertiary,self.color_on_tertiary)
@@ -155,7 +155,7 @@ class GUI:
             bg_color="#000000",
             fg_color="#000000",
             )
-        frame.place(x=900,y=264,anchor="n")
+        frame.place(x=932.5,y=295,anchor="n")
 
         # create entry
         room_name_entry = labeled_entry(frame,"ENTER ROOM NAME",self.color_tertiary,self.color_on_tertiary)
@@ -302,8 +302,8 @@ class GUI:
 if __name__ == "__main__":
     g = GUI('','','','')
     # g.start_page()
-    # g.join_page()
+    g.join_page()
     # g.create_page()
     # g.choose_identity_page()
     # g.confirm_respondent_page()
-    g.confirm_question_setter_page()
+    # g.confirm_question_setter_page()
