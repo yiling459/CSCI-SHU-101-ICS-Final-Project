@@ -206,7 +206,7 @@ class GUI:
 
 
         # create respondent button
-        respondent_button = bold_button(frame, self.color_primary,"Join Room", self.color_on_primary)
+        respondent_button = bold_button(frame, self.color_primary,"Respondent", self.color_on_primary)
         respondent_button.config(command = lambda: print(name_entry.get()))
 
           
