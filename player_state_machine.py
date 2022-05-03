@@ -48,6 +48,8 @@ class PlayerSM:
             self.room = room_name
             self.out_msg += 'You have created the room' + self.room
             return(True)
+        elif response["status"] == "duplicate":
+            self.out_msg += 'Room name has already been taken'
         else:
             self.out_msg += 'Something goes wrong. Fail to create the room.'
             return(False)
