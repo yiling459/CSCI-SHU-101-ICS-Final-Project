@@ -162,9 +162,52 @@ class GUI:
         
 
         # create continue button
-        new_room_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
-        new_room_button.config(command = lambda: print(room_name_entry.get()))
+        continue_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
+        continue_button.config(command = lambda: print(room_name_entry.get()))
         
+
+        self.window.mainloop()
+
+    
+    def choose_identity_page(self):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#FFFFFF",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+
+
+        # create the background image
+        background_image = tkinter.PhotoImage(file = relative_to_assets("choose_identity_background.png"))
+        canvas.create_image(0,
+                            0,
+                            anchor = 'nw',
+                            image = background_image)
+
+
+        # make the frame for contents
+        frame = customtkinter.CTkFrame(
+            master = self.window,
+            width=417,
+            height=431,
+            bg_color="#000000",
+            fg_color="#000000",
+            )
+        frame.place(relx=0.5,y=410,anchor="n")
+ 
+
+        # create question_setter button
+        question_setter_button = bold_button(frame, self.color_secondary, "Question setter", self.color_on_secondary)
+        question_setter_button.config(command = lambda: print(room_name_entry.get()))
+
+
+        # create respondent button
+        respondent_button = bold_button(frame, self.color_primary,"Join Room", self.color_on_primary)
+        respondent_button.config(command = lambda: print(name_entry.get()))
 
           
         self.window.mainloop()
@@ -174,10 +217,11 @@ class GUI:
         self.start_page()    
         self.join_page()
         self.create_page()
+        self.choose_identity_page()
 
 if __name__ == "__main__":
     g = GUI('','','','')
     # g.start_page()
     # g.join_page()
-    g.create_page()
-    
+    # g.create_page()
+    g.choose_identity_page()
