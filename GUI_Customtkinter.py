@@ -97,7 +97,7 @@ class GUI:
 
 
         # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("join_page_background.png"))
+        background_image = tkinter.PhotoImage(file = relative_to_assets("create_page_background.png"))
         canvas.create_image(0,
                             0,
                             anchor = 'nw',
@@ -115,7 +115,7 @@ class GUI:
         frame.place(x=900,y=264,anchor="n")
 
         # create entry
-        room_name_entry = labeled_entry(frame,"ENTER YOUR NAME",self.color_tertiary,self.color_on_tertiary)
+        room_name_entry = labeled_entry(frame,"ENTER ROOM NAME",self.color_tertiary,self.color_on_tertiary)
         
 
         # create continue button
@@ -140,7 +140,7 @@ class GUI:
 
 
         # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("create_page_background.png"))
+        background_image = tkinter.PhotoImage(file = relative_to_assets("join_page_background.png"))
         canvas.create_image(0,
                             0,
                             anchor = 'nw',
