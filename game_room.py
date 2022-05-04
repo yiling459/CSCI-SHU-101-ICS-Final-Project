@@ -11,8 +11,8 @@ class Room:
     def enter_game(self,name):
         self.members[name] = S_ALONE
     
-    # def is_member(self,name):
-    #     return name in self.members.keys()
+    def is_member(self,name):
+        return name in self.members.keys()
     
     def leave(self, name):
         self.disconnect(name)

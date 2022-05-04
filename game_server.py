@@ -46,7 +46,7 @@ class Server:
 
                     if self.room.is_member(name) != True:
                         # move socket from new clients list to logged clients
-                        self.new_clients.remove(sock)
+                        self.new_players.remove(sock)
                         # add into the name to sock mapping
                         self.logged_name2sock[name] = sock
                         self.logged_sock2name[sock] = name
@@ -94,16 +94,21 @@ class Server:
             if msg["action"] == "create":
                 room_name = msg["name"]
                 from_name = self.logged_sock2name[from_sock]
+                print(room_name, from_name)
                 # check whether the room has already existed
-                if self.room.find_room == False:
+                if self.room.find_room(room_name) == False:
+                    print("start creating the room")
                     # create the room
                     self.room.create_room(from_name, room_name)
                     msg = json.dumps(
                         {"action": "create", "status": "success"})
-                else:
+                elif self.room.find_room(room_name) == True:
+                    print("room has been created")
                     # "duplicate" means the room name has already been taken by others
                     msg = json.dumps(
                         {"action": "create", "status": "duplicate"})
+                else:
+                    print("something goes wrong")
                 mysend(from_sock, msg)
             elif msg["action"] == "join":
                 room_name = msg["name"]
@@ -148,6 +153,32 @@ class Server:
 
 
 
+
+    def run(self):
+        print('starting game server...')
+        while(1):
+            read, write, error = select.select(self.all_sockets, [], [])
+            print('checking logged players..')
+            for logc in list(self.logged_name2sock.values()):
+                if logc in read:
+                    self.handle_msg(logc)
+            print('checking new players..')
+            for newc in self.new_players[:]:
+                if newc in read:
+                    self.login(newc)
+            print('checking for new connections..')
+            if self.server in read:
+                # new player request
+                sock, address = self.server.accept()
+                self.new_player(sock)
+
+
+def main():
+    server = Server()
+    server.run()
+
+if __name__ == "__main__":
+    main()
 
 
 
