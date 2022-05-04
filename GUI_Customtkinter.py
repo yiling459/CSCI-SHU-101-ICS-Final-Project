@@ -1,6 +1,11 @@
 from pathlib import Path
+from turtle import bgcolor
+from game_utils import *
 import tkinter
-
+import json
+# what is threading??? select???
+import threading
+import select
 # from numpy import imag
 
 OUTPUT_PATH = Path(__file__).parent
@@ -40,7 +45,7 @@ class GUI:
         self.my_msg = ''
         self.system_msg = ''
 
-    def start_page(self):
+    def start_page(self,notification="Enter Your Name"):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#FFFFFF",
@@ -69,19 +74,39 @@ class GUI:
         frame.place(relx=0.5,y=454,anchor="n")
 
         # create entry
-        name_entry = labeled_entry(frame,"ENTER YOUR NAME",self.color_tertiary,self.color_on_tertiary)
+        name_entry = labeled_entry(frame,notification,self.color_tertiary,self.color_on_tertiary)
         
 
         # create new room button
         new_room_button = slim_button(frame, self.color_secondary, "New Room", self.color_on_secondary)
-        new_room_button.config(command = lambda: self.create_page(name_entry.get()))
+        new_room_button.config(command = lambda: self.register_name(name_entry.get(),"create"))
         
 
         # create join room button
         join_room_button = slim_button(frame, self.color_primary,"Join Room", self.color_on_primary)
-        join_room_button.config(command = lambda: self.join_page(name_entry.get()))
+        join_room_button.config(command = lambda: self.register_name(name_entry.get(),"join"))
           
         self.window.mainloop()
+
+    def register_name(self, player_name, action):
+        if len(player_name) > 0:
+            msg = json.dumps({"action": "login", "name": player_name})
+            self.send(msg)
+            response = json.loads(self.recv())
+            if response["status"] == "ok":
+                self.state.set_state(S_LOGGEDIN)
+                self.state.set_myname(player_name)
+                if action == "create":
+                    self.create_page(player_name)
+                elif action == "join":
+                    self.join_page(player_name)
+            if response["status"] == "duplicate":
+                self.start_page(notification="This name has been registered. Please enter another")
+            # figure out why later
+            process = threading.Thread(target=self.proc)
+            process.daemon = True
+            process.start()
+
 
 
     def create_page(self, player_name):
@@ -167,6 +192,30 @@ class GUI:
         
 
         self.window.mainloop()
+
+    def pairing_page(self,room_name="init"):
+        background_left = customtkinter.CTkFrame(
+            master = self.window,
+            width=425,
+            height=800,
+            fg_color=self.color_primary,
+            corner_radius=0
+            )
+        background_left.place(x=0,y=0)
+        self.window.config(bg="#FFFFFF")
+        room = customtkinter.CTkLabel(
+            master = background_left,
+            text_color = self.color_on_primary,
+            text = "Room:\n" + room_name,
+            text_font= ("Montserrat Alternates SemiBold", 40 * -1),
+            justify = tkinter.LEFT
+            )
+        room.place(relx=0.1,rely=0.2)
+
+        # divider = tkinter.Frame
+
+        self.window.mainloop()
+
 
     
     def choose_identity_page(self):
@@ -290,20 +339,39 @@ class GUI:
           
         self.window.mainloop()
     
+    # copy that in chat GUI here, change later
+    def proc(self):
+        # print(self.msg)
+        while True:
+            read, write, error = select.select([self.socket], [], [], 0)
+            peer_msg = []
+            # print(self.msg)
+            if self.socket in read:
+                peer_msg = self.recv()
+            # # figure it out later, what is textCons???
+            # if len(self.my_msg) > 0 or len(peer_msg) > 0:
+            #     # print(self.system_msg)
+            #     self.system_msg = self.sm.proc(self.my_msg, peer_msg)
+            #     self.my_msg = ""
+            #     self.textCons.config(state=NORMAL)
+            #     self.textCons.insert(END, self.system_msg + "\n\n")
+            #     self.textCons.config(state=DISABLED)
+            #     self.textCons.see(END)
 
     def run(self):
         self.start_page()    
-        self.join_page()
-        self.create_page()
-        self.choose_identity_page()
-        self.confirm_respondent_page()
-        self.confirm_question_setter_page()
+        # self.join_page()
+        # self.create_page()
+        # self.choose_identity_page()
+        # self.confirm_respondent_page()
+        # self.confirm_question_setter_page()
 
 if __name__ == "__main__":
     g = GUI('','','','')
-    g.start_page()
+    # g.start_page()
     # g.create_page()
     # g.join_page()
+    g.pairing_page()
     # g.choose_identity_page()
     # g.confirm_respondent_page()
     # g.confirm_question_setter_page()
