@@ -408,6 +408,46 @@ class GUI:
           
         self.window.mainloop()
     
+
+    def game_rules_page(self):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#FFFFFF",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+
+
+        # create the background image
+        background_image = tkinter.PhotoImage(file = relative_to_assets("GameRule_page_background.png"))
+        canvas.create_image(0,
+                            0,
+                            anchor = 'nw',
+                            image = background_image)
+
+
+        # make the frame for contents
+        frame = customtkinter.CTkFrame(
+            master = self.window,
+            width=417,
+            height=431,
+            bg_color="#000000",
+            fg_color="#000000",
+            )
+        frame.place(relx=0.815,y=627,anchor="n")
+ 
+
+         # create next button
+        next_button = bold_button(frame, self.color_secondary, "NEXT", self.color_on_secondary)
+        next_button.config(command = lambda: print(room_name_entry.get()))
+
+
+        self.window.mainloop()
+
+
     # copy that in chat GUI here, change later
     def proc(self):
         # print(self.msg)
@@ -438,9 +478,10 @@ class GUI:
 if __name__ == "__main__":
     g = GUI('','','','')
     # g.start_page()
-    g.create_page()
+    # g.create_page()
     # g.join_page()
     # g.pairing_page()
     # g.choose_identity_page()
     # g.confirm_respondent_page()
     # g.confirm_question_setter_page()
+    g.game_rules_page()
