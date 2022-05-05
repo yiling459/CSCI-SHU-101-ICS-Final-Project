@@ -434,8 +434,8 @@ class GUI:
             master = self.window,
             width=417,
             height=431,
-            bg_color="#000000",
-            fg_color="#000000",
+            bg_color=self.color_primary,
+            fg_color=self.color_primary,
             )
         frame.place(relx=0.815,y=640,anchor="n")
  
@@ -443,7 +443,7 @@ class GUI:
         # create next button
         next_button = bold_button(frame, self.color_secondary, "NEXT", self.color_on_secondary)
         next_button.config(command = lambda: print(room_name_entry.get()))
-        next_button.config(bg_color = self.color_on_secondary)
+        next_button.config(bg_color = self.color_primary)
 
 
         self.window.mainloop()
