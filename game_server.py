@@ -101,7 +101,7 @@ class Server:
                     # create the room
                     self.room.create_room(from_name, room_name)
                     msg = json.dumps(
-                        {"action": "create", "status": "success"})
+                        {"action": "create", "status": "success","members":[from_name]})
                 elif self.room.find_room(room_name) == True:
                     print("room has been created")
                     # "duplicate" means the room name has already been taken by others
@@ -118,8 +118,9 @@ class Server:
                     # join the room
                     self.room.join_room(from_name, room_name)
                     other_players = self.room.room_others(from_name, room_name)
+                    all_players = self.room.room_members(room_name)
                     msg = json.dumps(
-                        {"action": "join", "status": "success"})
+                        {"action": "join", "status": "success","members":all_players})
                     for player in other_players:
                         to_sock = self.logged_name2sock[player]
                         # status here means waiting for the game to start, may change later

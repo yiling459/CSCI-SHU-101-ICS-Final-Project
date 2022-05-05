@@ -204,18 +204,26 @@ class GUI:
             response = json.loads(self.recv())
             # create&join share the same
             if response["status"] == "success":
-                self.pairing_page(room_name)
+                members_lst = response["members"]
+                self.pairing_page(room_name, members_lst)
+                # for debugging
+                # self.pairing_page(room_name)
+                print("Here is fine")
+
             # create only
             elif response["status"] == "duplicate":
                 self.create_page(player_name, notification="This room has been registered. Please enter another:")
             # join only
             elif response["status"] == "no such room":
                 self.join_page(player_name, notification="No such room. Please enter another:")
+            else:
+                print("Wrong!!!")
 
 
 
 
-    def pairing_page(self,room_name="init"):
+    def pairing_page(self,room_name="init",members_lst=["empty"]):
+
 
         background_left = customtkinter.CTkFrame(
             master = self.window,
@@ -270,6 +278,37 @@ class GUI:
             justify = tkinter.LEFT
             )
         title.place(relx=0.5,y=157,anchor="center")
+
+        member_frame = customtkinter.CTkFrame(
+            master = background_right
+            )
+        member_frame.place(relx=0.12,y=220)
+
+        # show who are in the room
+        for player in members_lst:
+            customtkinter.CTkLabel(
+                master = member_frame,
+                text = player,
+                text_color = self.color_on_secondary,
+                text_font = ("Montserrat Alternates SemiBold", 24 * -1),
+                bg_color=self.color_primary,
+                fg_color=self.color_secondary
+                ).pack(side=tkinter.RIGHT)
+
+        # maybe bug here
+        # update when some one enters
+        response = json.loads(self.recv())
+        # if len(response) > 0:
+        #     if response["action"] == "pairing":
+        #         members_lst.append(response["from"])
+        #         customtkinter.CTkLabel(
+        #             master = member_frame,
+        #             text = player,
+        #             text_color = self.color_on_secondary,
+        #             text_font = ("Montserrat Alternates SemiBold", 24 * -1),
+        #             bg_color=self.color_primary,
+        #             fg_color=self.color_secondary
+        #             ).pack()
 
         join_button = bold_button(
             master=background_right,
