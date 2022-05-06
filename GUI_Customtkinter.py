@@ -492,7 +492,7 @@ class GUI:
     def wait_question_page(self):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#FFFFFF",
+                                        bg = "#000000",
                                         height = self.canvas_height,
                                         width = self.canvas_width,
                                         bd = 0,
@@ -506,10 +506,11 @@ class GUI:
             master = canvas,
             width=1200,
             height=800,
-            bg_color="#FFFFFF",
-            fg_color="#FFFFFF",
+            bg_color="#000000",
+            fg_color="#000000",
             )
         frame.place(x=300,y=100,anchor="n")
+
 
         # create "LOADING..."
         reminder = customtkinter.CTkLabel(
@@ -518,7 +519,7 @@ class GUI:
             text = "LOADING...",
             text_font= ("Montserrat Alternates SemiBold", 96 * -1),
             )
-        reminder.place(relx=0.5,rely=0.1)
+        reminder.place(relx=0.5,rely=0.2)
 
 
         #create "Wait until all the questions have been settled."
@@ -528,7 +529,7 @@ class GUI:
             text = "Wait until all the questions\nhave been settled.",
             text_font= ("Geo SemiBold", 40 * -1),
             )
-        reminder.place(relx=0.5,rely=0.3)
+        reminder.place(relx=0.55,rely=0.35)
 
 
         self.window.mainloop()
