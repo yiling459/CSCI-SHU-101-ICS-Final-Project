@@ -531,6 +531,48 @@ class GUI:
             )
         reminder.place(relx=0.55,rely=0.35)
 
+        self.window.mainloop()
+
+
+    def design_your_qeustions(self):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#000000",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+
+
+        # create the background image
+        background_image = tkinter.PhotoImage(file = relative_to_assets("blank.png"))
+        canvas.create_image(0,
+                            0,
+                            anchor = 'nw',
+                            image = background_image)
+
+
+        # make the frame for contents
+        frame = customtkinter.CTkFrame(
+            master = self.window,
+            width=1200,
+            height=800,
+            bg_color = self.color_primary,
+            fg_color=self.color_on_primary,
+            )
+        frame.place(x=0,y=0,anchor="n")
+
+        
+        # create title
+        title = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "Question(1/5)",
+            text_font= ("Montserrat Alternates SemiBold", 40 * -1),
+            )
+        title.place(relx=0.55,rely=0.05)
 
         self.window.mainloop()
 
@@ -573,4 +615,5 @@ if __name__ == "__main__":
     # g.confirm_respondent_page()
     # g.confirm_question_setter_page()
     # g.game_rules_page()
-    g.wait_question_page()
+    # g.wait_question_page()
+    g.design_your_qeustions()
