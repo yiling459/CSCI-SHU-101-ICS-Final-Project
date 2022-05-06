@@ -558,44 +558,25 @@ class GUI:
 
 
     def design_your_questions(self):
-        # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#000000",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
-
-
-        # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("blank.png"))
-        canvas.create_image(0,
-                            0,
-                            anchor = 'nw',
-                            image = background_image)
-
-
         # make the frame for contents
         frame = customtkinter.CTkFrame(
             master = self.window,
             width=1200,
             height=800,
             bg_color = self.color_primary,
-            fg_color=self.color_on_primary,
+            fg_color = self.color_primary,
             )
-        frame.place(x=0,y=0,anchor="n")
+        frame.place(x=0,y=0,anchor="nw")
 
         
         # create title
         title = customtkinter.CTkLabel(
             master = frame,
-            text_color = self.color_primary,
+            text_color = self.color_on_primary,
             text = "Question(1/5)",
             text_font= ("Montserrat Alternates SemiBold", 40 * -1),
             )
-        title.place(relx=0.55,rely=0.05)
+        title.place(relx=0.05,rely=0.05)
 
         self.window.mainloop()
 
