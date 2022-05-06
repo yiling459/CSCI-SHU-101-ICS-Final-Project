@@ -489,6 +489,52 @@ class GUI:
         self.window.mainloop()
 
 
+    def wait_question_page(self):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#FFFFFF",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+
+
+        # make the frame for contents
+        frame = customtkinter.CTkFrame(
+            master = canvas,
+            width=1200,
+            height=800,
+            bg_color="#FFFFFF",
+            fg_color="#FFFFFF",
+            )
+        frame.place(x=300,y=100,anchor="n")
+
+        # create "LOADING..."
+        reminder = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "LOADING...",
+            text_font= ("Montserrat Alternates SemiBold", 96 * -1),
+            )
+        reminder.place(relx=0.5,rely=0.1)
+
+
+        #create "Wait until all the questions have been settled."
+        reminder = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "Wait until all the questions\nhave been settled.",
+            text_font= ("Geo SemiBold", 40 * -1),
+            )
+        reminder.place(relx=0.5,rely=0.3)
+
+
+        self.window.mainloop()
+
+
+
     # copy that in chat GUI here, change later
     def proc(self):
         # print(self.msg)
@@ -525,4 +571,5 @@ if __name__ == "__main__":
     # g.choose_identity_page()
     # g.confirm_respondent_page()
     # g.confirm_question_setter_page()
-    g.game_rules_page()
+    # g.game_rules_page()
+    g.wait_question_page()
