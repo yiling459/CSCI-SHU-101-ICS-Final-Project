@@ -534,7 +534,7 @@ class GUI:
         self.window.mainloop()
 
 
-    def design_your_qeustions(self):
+    def design_your_questions(self):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#000000",
@@ -616,4 +616,4 @@ if __name__ == "__main__":
     # g.confirm_question_setter_page()
     # g.game_rules_page()
     # g.wait_question_page()
-    g.design_your_qeustions()
+    g.design_your_questions()
