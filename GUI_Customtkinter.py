@@ -1,5 +1,6 @@
 from pathlib import Path
 from turtle import bgcolor
+from xml.etree.ElementTree import TreeBuilder
 from game_utils import *
 from GUI_Assets import *
 import tkinter
@@ -24,13 +25,13 @@ customtkinter.set_default_color_theme("blue")
 class GUI:
     def __init__(self, send, recv, state, s):
         self.window = customtkinter.CTk()
-        #init the canvas here
+        # init the canvas here
         self.window.geometry("1200x800")
         self.window.configure(bg = "#5294D0")
         # self.Window.withdraw()
         self.canvas_width = 1200.0
         self.canvas_height = 800.0
-        #init color palettes
+        # init color palettes
         self.color_primary = "#57A2E8"
         self.color_secondary = "#96C3ED"
         self.color_tertiary = "#D5E9F9"
@@ -43,8 +44,12 @@ class GUI:
         self.recv = recv
         self.state = state
         self.socket = s
-        self.my_msg = ''
-        self.system_msg = ''
+        # change the original my_msg here
+        self.my_action = ''
+        self.server_action = ''
+
+        # init the member_lst of the room
+        self.members_lst = []
 
     def start_page(self,notification="Enter Your Name"):
         # create the CTKcanvas
@@ -104,9 +109,10 @@ class GUI:
             elif response["status"] == "duplicate":
                 self.start_page(notification="This name has been registered. Please enter another")
             # figure out why later
-            process = threading.Thread(target=self.proc)
-            process.daemon = True
-            process.start()
+            # # treading means running another function at the same time
+            # process = threading.Thread(target=self.proc)
+            # process.daemon = True
+            # process.start()
 
 
 
@@ -204,8 +210,9 @@ class GUI:
             response = json.loads(self.recv())
             # create&join share the same
             if response["status"] == "success":
-                members_lst = response["members"]
-                self.pairing_page(room_name, members_lst)
+                self.members_lst = response["members"]
+                self.state.set_state(S_PAIRING)
+                self.pairing_page(room_name)
                 # for debugging
                 # self.pairing_page(room_name)
                 print("Here is fine")
@@ -222,7 +229,7 @@ class GUI:
 
 
 
-    def pairing_page(self,room_name="init",members_lst=["empty"]):
+    def pairing_page(self,room_name="init"):
 
 
         background_left = customtkinter.CTkFrame(
@@ -280,24 +287,27 @@ class GUI:
         title.place(relx=0.5,y=157,anchor="center")
 
         member_frame = customtkinter.CTkFrame(
-            master = background_right
+            master = background_right,
+            bg_color="#FFFFFF",
+            fg_color="#FFFFFF"
             )
-        member_frame.place(relx=0.12,y=220)
+        member_frame.place(relx=0.1,y=220)
 
         # show who are in the room
-        for player in members_lst:
+        for player in self.members_lst:
             customtkinter.CTkLabel(
                 master = member_frame,
                 text = player,
                 text_color = self.color_on_secondary,
                 text_font = ("Montserrat Alternates SemiBold", 24 * -1),
-                bg_color=self.color_primary,
+                corner_radius=5,
+                bg_color=self.color_on_primary,
                 fg_color=self.color_secondary
-                ).pack(side=tkinter.RIGHT)
-
+                ).pack(side=tkinter.LEFT,padx=10)
+                
         # maybe bug here
         # update when some one enters
-        response = json.loads(self.recv())
+        # response = json.loads(self.recv())
         # if len(response) > 0:
         #     if response["action"] == "pairing":
         #         members_lst.append(response["from"])
@@ -310,6 +320,10 @@ class GUI:
         #             fg_color=self.color_secondary
         #             ).pack()
 
+        update_process = threading.Thread(target=self.update_member)
+        update_process.daemon = True
+        update_process.start()
+
         join_button = bold_button(
             master=background_right,
             button_color=self.color_primary,
@@ -318,9 +332,18 @@ class GUI:
             )
         join_button.config(bg_color = "#FFFFFF")
         join_button.place(relx=0.1,rely=0.75)
-    
 
         self.window.mainloop()
+
+    def update_member(self):
+        while True:
+            try:
+                response = json.loads(self.recv())
+                if len(response) > 0:
+                    self.members_lst.append(response["members"])
+
+            except:
+                pass
 
 
 
@@ -579,14 +602,14 @@ class GUI:
 
 
     # copy that in chat GUI here, change later
-    def proc(self):
-        # print(self.msg)
-        while True:
-            read, write, error = select.select([self.socket], [], [], 0)
-            peer_msg = []
-            # print(self.msg)
-            if self.socket in read:
-                peer_msg = self.recv()
+    # def proc(self):
+    #     # print(self.msg)
+    #     while True:
+    #         read, write, error = select.select([self.socket], [], [], 0)
+    #         peer_msg = []
+    #         # print(self.msg)
+    #         if self.socket in read:
+    #             peer_msg = self.recv()
             # # figure it out later, what is textCons???
             # if len(self.my_msg) > 0 or len(peer_msg) > 0:
             #     # print(self.system_msg)
