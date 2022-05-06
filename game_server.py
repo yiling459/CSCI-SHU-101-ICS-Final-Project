@@ -108,13 +108,13 @@ class Server:
                     msg = json.dumps(
                         {"action": "create", "status": "duplicate"})
                 else:
-                    print("something goes wrong")
+                    print("something goes wrong with create function")
                 mysend(from_sock, msg)
             elif msg["action"] == "join":
                 room_name = msg["name"]
                 from_name = self.logged_sock2name[from_sock]
                 # check whether the room exists
-                if self.room.find_room == True:
+                if self.room.find_room(room_name) == True:
                     # join the room
                     self.room.join_room(from_name, room_name)
                     other_players = self.room.room_others(from_name, room_name)
@@ -127,9 +127,12 @@ class Server:
                         # action here may also be changed later
                         mysend(to_sock, json.dumps(
                             {"action": "pairing", "status": "waiting", "from": from_name}))
-                else:
+                elif self.room.find_room(room_name) == False:
                     msg = json.dumps(
                         {"action": "join", "status": "no such room"})
+
+                else:
+                    print("something goes wrong with join function")
                 mysend(from_sock, msg)
 # ==============================================================================
 # decide whether to set the game base on the number of players
