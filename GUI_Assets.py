@@ -33,6 +33,17 @@ def bold_button(master, button_color, text, text_color):
     button.pack(padx=10,pady=10)
     return button
 
+def back_button(master,bg_color):
+    button = customtkinter.CTkButton(
+        master=master,
+        bg_color=bg_color,
+        fg_color="#000000",
+        border_width=0,
+        corner_radius=28,
+        text="back"
+
+    )
+
 def labeled_entry(master, label_text, entry_color, entry_text_color):
     entry_frame = customtkinter.CTkFrame(
             master = master,
