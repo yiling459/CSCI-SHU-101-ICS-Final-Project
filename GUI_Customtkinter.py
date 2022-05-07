@@ -629,12 +629,12 @@ class GUI:
         
         # create "options" label
         options = customtkinter.CTkLabel(
-            master = frame_question,
+            master = frame,
             text_color = "#FFFFFF",
             text = "Options",
             text_font= ("Geo", 40 * -1),
             )
-        options.place(relx=0.1,rely=0.8)
+        options.place(relx=0.08,rely=0.333)
 
         answer1 = long_entry(
             master = frame_answers, 
