@@ -155,6 +155,10 @@ class Server:
 # ==============================================================================
             elif msg["action"] == "set questions":
                 pass
+        
+        else:
+            # client died unexpectedly
+            self.logout(from_sock)
 
 
 
