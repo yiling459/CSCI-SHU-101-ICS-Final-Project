@@ -240,6 +240,7 @@ class GUI:
 
 
     def pairing_page(self,room_name="init"):
+        self.room_name = room_name
 
 
         background_left = customtkinter.CTkFrame(
@@ -345,17 +346,31 @@ class GUI:
         join_button.config(bg_color = "#FFFFFF")
         join_button.place(relx=0.1,rely=0.75)
 
+        # try:
+        #     response = json.loads(self.recv())
+        #     print(response)
+        #     if response["action"] == "pairing":
+        #         self.members_lst.append(response["from"])
+        #         self.pairing_page(room_name)
+                
+        # except:
+        #     print("except")
+        #     pass
+
         self.window.mainloop()
 
     def update_member(self):
         while True:
             try:
                 response = json.loads(self.recv())
-                if len(response) > 0:
-                    self.members_lst.append(response["members"])
-
+            # print(self.recv())
+                if response["action"] == "pairing":
+                    self.members_lst.append(response["from"])
+                    self.pairing_page(self.room_name)
             except:
                 pass
+            
+            
 
 
 
