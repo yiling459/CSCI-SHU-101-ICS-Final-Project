@@ -561,8 +561,8 @@ class GUI:
         reminder = customtkinter.CTkLabel(
             master = frame,
             text_color = self.color_primary,
-            text = "Wait until all the questions\nhave been settled.",
-            text_font= ("Geo SemiBold", 40 * -1),
+            text = "Wait until all the questions\nhave been settled.\nThe game will begin at any time.",
+            text_font= ("Geo", 40 * -1),
             )
         reminder.place(relx=0.55,rely=0.35)
 
@@ -709,5 +709,5 @@ if __name__ == "__main__":
     # g.confirm_respondent_page()
     # g.confirm_question_setter_page()
     # g.game_rules_page()
-    # g.wait_question_page()
-    g.design_your_questions()
+    g.wait_question_page()
+    # g.design_your_questions()
