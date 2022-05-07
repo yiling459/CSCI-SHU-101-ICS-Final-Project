@@ -154,7 +154,23 @@ class Server:
 # set the game
 # ==============================================================================
             elif msg["action"] == "set questions":
-                pass
+                room_name = msg["from room"]
+                question = msg["question"]
+                right_answer = msg["answers"][0]
+                wrong_answers = msg["answers"][1:]
+                self.room.set_question(room_name, question, right_answer, wrong_answers):
+                for player in self.room.room_members(room_name):
+                    msg = json.dumps(
+                        {"action": "all set"})
+
+# ==============================================================================
+# the game finally starts
+# ==============================================================================
+            # kick off means the game really begin
+            elif msg["action"] == "kick off":
+                
+
+                
         
         else:
             # client died unexpectedly
