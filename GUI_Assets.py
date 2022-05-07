@@ -112,6 +112,7 @@ def long_entry(master, bg_color, entry_color, entry_text_color):
         height=56
         )
     entry.pack()
+    return entry
 
 def question_entry(master,frame_background_color,label_color,entry_color,entry_text_color):
     question_frame =  customtkinter.CTkFrame(
