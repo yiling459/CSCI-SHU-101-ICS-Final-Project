@@ -6,6 +6,7 @@ class Room:
     def __init__(self):
         self.members = {}
         self.game_rooms = {}
+        self.all_questions = {}
 
     # substitute function join(self, me)
     def enter_game(self,name):
@@ -56,6 +57,18 @@ class Room:
                 if other != me:
                     others_lst.append(other)
         return others_lst
+
+    def set_question(self, room_name, question, right_answer, wrong_answers:list):
+        questions_dict = {}
+        answers_dict = {}
+        answers_dict[right_answer] = "right"
+        for answer in wrong_answers:
+            answers_dict[answer] = "wrong"
+        questions_dict[question] = answers_dict
+
+        self.all_questions[room_name] = questions_dict
+        
+
 
 
     
