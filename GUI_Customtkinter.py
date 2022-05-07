@@ -38,6 +38,7 @@ class GUI:
         self.color_on_primary = "#FFFFFF"
         self.color_on_secondary = "#FFFFFF"
         self.color_on_tertiary = "#000000"
+        self.color_background = "#5293CF"
 
 
         self.send = send
@@ -589,18 +590,34 @@ class GUI:
             )
         title.place(relx=0.05,rely=0.05)
 
+        # create frame for questions & answers
+        frame_question_answers = customtkinter.CTkFrame(
+            master = self.window,
+            width=1200,
+            height=800,
+            bg_color = self.color_primary,
+            fg_color = self.color_primary,
+            )
+        frame_question_answers.place(relx=0.5,rely=0.15,anchor='n')
+
         # set the question
-        question = long_entry(
-            self.window, 
-            bg_color = self.color_on_primary , 
-            entry_color = self.color_on_primary, 
-            entry_text_color = "#FFFFFF"
-            ) 
+        question = question_entry(
+            master = frame_question_answers,
+            frame_background_color = self.color_primary,
+            label_color = "#FFFFFF",
+            entry_color = "#FFFFFF",
+            entry_text_color = "#000000"
+            )
 
         # set 4 answers
-        answers = answers_entry(self.window,self.color_primary,"#000000",["#E0EFFB","#A9CEF0","#96C3ED","#74A8D9"],["#000000","#000000","#000000","#000000"])
-    
-
+        answers = answers_entry(
+            master = frame_question_answers,
+            frame_background_color = self.color_primary,
+            label_color = "#000000",
+            entry_colors = ["#E0EFFB","#A9CEF0","#96C3ED","#74A8D9"],
+            entry_text_colors = ["#000000","#000000","#000000","#000000"]
+            )
+        
         self.window.mainloop()
 
 
