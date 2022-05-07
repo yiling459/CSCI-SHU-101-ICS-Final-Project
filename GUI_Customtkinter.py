@@ -575,8 +575,8 @@ class GUI:
             master = self.window,
             width=1200,
             height=800,
-            bg_color = self.color_primary,
-            fg_color = self.color_primary,
+            bg_color = self.color_background,
+            fg_color = self.color_background,
             )
         frame.place(x=0,y=0,anchor="nw")
 
@@ -595,15 +595,15 @@ class GUI:
             master = self.window,
             width=1200,
             height=800,
-            bg_color = self.color_primary,
-            fg_color = self.color_primary,
+            bg_color = self.color_background,
+            fg_color = self.color_background,
             )
         frame_question_answers.place(relx=0.5,rely=0.15,anchor='n')
 
         # set the question
         question = question_entry(
             master = frame_question_answers,
-            frame_background_color = self.color_primary,
+            frame_background_color = self.color_background,
             label_color = "#FFFFFF",
             entry_color = "#FFFFFF",
             entry_text_color = "#000000"
@@ -612,7 +612,7 @@ class GUI:
         # set 4 answers
         answers = answers_entry(
             master = frame_question_answers,
-            frame_background_color = self.color_primary,
+            frame_background_color = self.color_background,
             label_color = "#000000",
             entry_colors = ["#E0EFFB","#A9CEF0","#96C3ED","#74A8D9"],
             entry_text_colors = ["#000000","#000000","#000000","#000000"]
