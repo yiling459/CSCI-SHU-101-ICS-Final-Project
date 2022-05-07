@@ -585,9 +585,21 @@ class GUI:
             master = frame,
             text_color = self.color_on_primary,
             text = "Question(1/5)",
-            text_font= ("Montserrat Alternates SemiBold", 40 * -1),
+            text_font= ("Montserrat Alternates SemiBold", 40 * -1)
             )
         title.place(relx=0.05,rely=0.05)
+
+        # set the question
+        question = long_entry(
+            self.window, 
+            bg_color = self.color_on_primary , 
+            entry_color = self.color_on_primary, 
+            entry_text_color = "#FFFFFF"
+            ) 
+
+        # set 4 answers
+        answers = answers_entry(self.window,self.color_primary,"#000000",["#E0EFFB","#A9CEF0","#96C3ED","#74A8D9"],["#000000","#000000","#000000","#000000"])
+    
 
         self.window.mainloop()
 
@@ -631,4 +643,4 @@ if __name__ == "__main__":
     # g.confirm_question_setter_page()
     # g.game_rules_page()
     # g.wait_question_page()
-    # g.design_your_questions()
+    g.design_your_questions()
