@@ -45,9 +45,10 @@ def back_button(master,bg_color):
         text_font= ("Futura Medium", 36 * -1),
         text_color="#FFFFFF",
         width=200,
-        height=100
+        height=56
         )
-    button.pack(padx=10,pady=10)
+    # button.pack(padx=10,pady=10)
+    return button
 
 def next_button(master,bg_color):
     button = customtkinter.CTkButton(
