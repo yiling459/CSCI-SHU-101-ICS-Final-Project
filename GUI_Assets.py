@@ -40,9 +40,28 @@ def back_button(master,bg_color):
         fg_color="#000000",
         border_width=0,
         corner_radius=28,
-        text="back"
+        text="Back",
+        text_font= ("Futura Medium", 36 * -1),
+        text_color="#FFFFFF",
+        width=200,
+        height=100
+        )
+    button.pack(padx=10,pady=10)
 
-    )
+def next_button(master,bg_color):
+    button = customtkinter.CTkButton(
+        master=master,
+        bg_color=bg_color,
+        fg_color="#000000",
+        border_width=0,
+        corner_radius=28,
+        text="Next",
+        text_font= ("Futura Medium", 36 * -1),
+        text_color="#FFFFFF",
+        width=200,
+        height=100
+        )
+    button.pack(padx=10,pady=10)
 
 def labeled_entry(master, label_text, entry_color, entry_text_color):
     entry_frame = customtkinter.CTkFrame(
@@ -76,6 +95,11 @@ def labeled_entry(master, label_text, entry_color, entry_text_color):
     entry.pack()
     entry_frame.pack(padx=10,pady=10)
     return entry
+
+
+
+
+
 
     
 
