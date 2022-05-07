@@ -591,18 +591,18 @@ class GUI:
         title.place(relx=0.05,rely=0.05)
 
         # create frame for questions & answers
-        frame_question_answers = customtkinter.CTkFrame(
+        frame_question = customtkinter.CTkFrame(
             master = self.window,
             width=1200,
             height=800,
             bg_color = self.color_background,
             fg_color = self.color_background,
             )
-        frame_question_answers.place(relx=0.5,rely=0.15,anchor='n')
+        frame_question.place(relx=0.5,rely=0.15,anchor='n')
 
         # set the question
         question = question_entry(
-            master = frame_question_answers,
+            master = frame_question,
             frame_background_color = self.color_background,
             label_color = "#FFFFFF",
             entry_color = "#FFFFFF",
@@ -610,13 +610,63 @@ class GUI:
             )
 
         # set 4 answers
-        answers = answers_entry(
-            master = frame_question_answers,
-            frame_background_color = self.color_background,
-            label_color = "#000000",
-            entry_colors = ["#E0EFFB","#A9CEF0","#96C3ED","#74A8D9"],
-            entry_text_colors = ["#000000","#000000","#000000","#000000"]
+        # answers = answers_entry(
+        #     master = frame_question_answers,
+        #     frame_background_color = self.color_background,
+        #     label_color = "#000000",
+        #     entry_colors = ["#E0EFFB","#A9CEF0","#96C3ED","#74A8D9"],
+        #     entry_text_colors = ["#000000","#000000","#000000","#000000"]
+        #     )
+
+        frame_answers = customtkinter.CTkFrame(
+            master = self.window,
+            width=1200,
+            height=800,
+            bg_color = self.color_background,
+            fg_color = self.color_background,
             )
+        frame_answers.place(relx=0.5,rely=0.4,anchor='n')
+        
+        # create "options" label
+        options = customtkinter.CTkLabel(
+            master = frame_question,
+            text_color = "#FFFFFF",
+            text = "Options",
+            text_font= ("Geo", 40 * -1),
+            )
+        options.place(relx=0.1,rely=0.8)
+
+        answer1 = long_entry(
+            master = frame_answers, 
+            bg_color = self.color_background, 
+            entry_color = "#FFFFFF", 
+            entry_text_color = "#000000"
+            )
+        answer1.pack(padx=0,pady=20)
+
+        answer2 = long_entry(
+            master = frame_answers, 
+            bg_color = self.color_background, 
+            entry_color = "#A9CEF0", 
+            entry_text_color = "#000000"
+            )
+        answer2.pack(padx=0,pady=20)
+
+        answer3 = long_entry(
+            master = frame_answers, 
+            bg_color = self.color_background, 
+            entry_color = "#96C3ED", 
+            entry_text_color = "#000000"
+            )
+        answer3.pack(padx=0,pady=20)
+        
+        answer4 = long_entry(
+            master = frame_answers, 
+            bg_color = self.color_background, 
+            entry_color = "#74A8D9", 
+            entry_text_color = "#000000"
+            )
+        answer4.pack(padx=0,pady=20)
         
         self.window.mainloop()
 
