@@ -223,6 +223,8 @@ class GUI:
             # join only
             elif response["status"] == "no such room":
                 self.join_page(player_name, notification="No such room. Please enter another:")
+            elif response["status"] == "waiting":
+                self.members_lst.append(response["from"])
             else:
                 print("Wrong!!!")
 
@@ -293,6 +295,7 @@ class GUI:
             )
         member_frame.place(relx=0.1,y=220)
 
+
         # show who are in the room
         for player in self.members_lst:
             customtkinter.CTkLabel(
@@ -320,6 +323,7 @@ class GUI:
         #             fg_color=self.color_secondary
         #             ).pack()
 
+        
         update_process = threading.Thread(target=self.update_member)
         update_process.daemon = True
         update_process.start()

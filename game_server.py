@@ -125,6 +125,7 @@ class Server:
                         to_sock = self.logged_name2sock[player]
                         # status here means waiting for the game to start, may change later
                         # action here may also be changed later
+                        print(player)
                         mysend(to_sock, json.dumps(
                             {"action": "pairing", "status": "waiting", "from": from_name}))
                 elif self.room.find_room(room_name) == False:
