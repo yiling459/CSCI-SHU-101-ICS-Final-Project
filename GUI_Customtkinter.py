@@ -154,6 +154,8 @@ class GUI:
         new_room_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
         new_room_button.config(command = lambda: self.register_room(player_name,room_name_entry.get(),"create"))
         
+        # create back button
+        back_button = back_button(canvas,"#5293CF")
 
           
         self.window.mainloop()
