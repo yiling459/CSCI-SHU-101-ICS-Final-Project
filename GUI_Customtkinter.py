@@ -144,24 +144,25 @@ class GUI:
             bg_color="#000000",
             fg_color="#000000",
             )
-        frame.place(x=932.5,y=295,anchor="n")
+        frame.place(x=932.5,y=280,anchor="n")
 
         # create entry
         room_name_entry = labeled_entry(frame,notification,self.color_tertiary,self.color_on_tertiary)
         
 
         # create continue button
-        new_room_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
+        new_room_button = slim_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
         new_room_button.config(command = lambda: self.register_room(player_name,room_name_entry.get(),"create"))
         
         # create back button
-        back_button = back_button(canvas,"#5293CF")
+        back= slim_button(frame,self.color_primary,"BACK",self.color_on_primary)
+        back.config(command = lambda: self.start_page())
 
           
         self.window.mainloop()
 
 
-    def join_page(self, player_name, notification="Enter room name:"):
+    def join_page(self, player_name="empty", notification="Enter room name:"):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#FFFFFF",
@@ -189,16 +190,20 @@ class GUI:
             bg_color="#000000",
             fg_color="#000000",
             )
-        frame.place(x=932.5,y=295,anchor="n")
+        frame.place(x=932.5,y=280,anchor="n")
 
         # create entry
         room_name_entry = labeled_entry(frame,notification,self.color_tertiary,self.color_on_tertiary)
         
 
         # create continue button
-        continue_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
+        continue_button = slim_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
         continue_button.config(command = lambda: self.register_room(player_name,room_name_entry.get(),"join"))
         
+        # create back button
+        back= slim_button(frame,self.color_primary,"BACK",self.color_on_primary)
+        back.config(command = lambda: self.start_page())
+
 
         self.window.mainloop()
 
@@ -626,4 +631,4 @@ if __name__ == "__main__":
     # g.confirm_question_setter_page()
     # g.game_rules_page()
     # g.wait_question_page()
-    g.design_your_questions()
+    # g.design_your_questions()
