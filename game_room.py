@@ -1,6 +1,8 @@
 S_ALONE = 0
 S_PAIRING = 1
 
+S_SETTER = -1
+
 class Room:
 
     def __init__(self):
