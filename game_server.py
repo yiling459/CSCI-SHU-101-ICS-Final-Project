@@ -30,6 +30,7 @@ class Server:
 
         # set the color dictionary
         self.color_dict = {"red":"#C03221","orange":"#ED7D3A","yellow":"#F0D719","green":"#4A8259","cyan":"#4AC3D3","blue":"#2F4E89","purple":"#521C5E"}
+        self.total_answers_recv = 0
 
     def new_player(self, sock):
         # add to all sockets and to new players
@@ -173,7 +174,39 @@ class Server:
             elif msg["action"] == "kick off":
                 question, answers_name, answers_hex = generate_question_and_answers(self.color_dict)
                 msg = json.dumps(
-                        {"action": "game playing", "question": question})
+                        {"action": "game playing", "question": question,"answers_name":answers_name,"answers_hex":answers_hex})
+                mysend(from_sock, msg)
+            
+            elif msg["action"] == "right choice made":
+                self.total_answers_recv += 1
+                from_name = self.logged_sock2name[from_sock]
+                room_name = msg["from room"]
+                position = self.total_answers_recv % 4
+                # make sure this is the first player to answer
+                if position == 1:
+                    # add one score to the player
+                    self.room.right_answer(from_name)
+                    # get the highest_score
+                    highest_score = 0
+                    for player in self.room.room_members(room_name):
+                        player_score = self.room.members[player]
+                        if player_score > highest_score:
+                            highest_score = player_score
+                    # get the list of players who have the highest score
+                    top_player_lst = []
+                    for player in self.room.room_members(room_name):
+                        player_score = self.room.members[player]
+                        if player_score == highest_score:
+                            pass
+
+                    msg = json.dumps(
+                        {"action": "you win", "total score":self.room.members[from_name]})
+                    for player in self.room.room_others(from_name, room_name):
+                        pass
+                        
+
+
+                
 
 
 
