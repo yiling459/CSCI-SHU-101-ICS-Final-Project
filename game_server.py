@@ -107,6 +107,7 @@ class Server:
                     # "duplicate" means the room name has already been taken by others
                     msg = json.dumps(
                         {"action": "create", "status": "duplicate"})
+                    
                 else:
                     print("something goes wrong with create function")
                 mysend(from_sock, msg)
@@ -122,12 +123,20 @@ class Server:
                     msg = json.dumps(
                         {"action": "join", "status": "success","members":all_players})
                     for player in other_players:
-                        to_sock = self.logged_name2sock[player]
-                        # status here means waiting for the game to start, may change later
-                        # action here may also be changed later
-                        print(player)
-                        mysend(to_sock, json.dumps(
-                            {"action": "pairing", "status": "waiting", "from": from_name}))
+                        got_feedback = False
+                        while not got_feedback:
+                            to_sock = self.logged_name2sock[player]
+                            # status here means waiting for the game to start, may change later
+                            # action here may also be changed later
+                            mysend(to_sock, json.dumps(
+                                {"action": "pairing", "status": "waiting", "from": from_name}))
+                            print("message has been sent to "+player)
+                            feedback = json.load(myrecv(to_sock))
+                            if len(feedback) > 0:
+                                if feedback["action"] == "check":
+                                    got_feedback = True
+                                    print("got feedback from " + player)
+
                 elif self.room.find_room(room_name) == False:
                     msg = json.dumps(
                         {"action": "join", "status": "no such room"})

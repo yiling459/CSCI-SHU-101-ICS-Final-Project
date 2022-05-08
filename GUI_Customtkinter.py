@@ -361,15 +361,23 @@ class GUI:
 
     def update_member(self):
         while True:
+            print("updating for new message")
             try:
                 response = json.loads(self.recv())
+                print(response)
             # print(self.recv())
                 if response["action"] == "pairing":
                     self.members_lst.append(response["from"])
+                    print("page updated because " + response["from"]+ " enters")
+                    feedback = json.dumps({"action": "check"})
+                    self.send(feedback)
                     self.pairing_page(self.room_name)
+                    
             except:
                 pass
-            
+
+
+                
             
 
 
