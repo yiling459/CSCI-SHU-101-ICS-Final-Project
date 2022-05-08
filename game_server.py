@@ -28,6 +28,9 @@ class Server:
         # self.sonnet = pkl.load(self.sonnet_f)
         # self.sonnet_f.close()
 
+        # set the color dictionary
+        self.color_dict = {"red":"#C03221","orange":"#ED7D3A","yellow":"#F0D719","green":"#4A8259","cyan":"#4AC3D3","blue":"#2F4E89","purple":"#521C5E"}
+
     def new_player(self, sock):
         # add to all sockets and to new players
         print('new player...')
@@ -138,17 +141,17 @@ class Server:
 # ==============================================================================
 # decide whether to set the game base on the number of players
 # ==============================================================================
-            elif msg["action"] == "start the game":
-                player_num = len(self.room.room_members)
-                if player_num < 2:
-                    msg = json.dumps(
-                        {"action": "denied", "reason": "there must be over two players"})
-                elif player_num == 2:
-                    msg = json.dumps(
-                        {"action": "all set"})
-                elif player_num > 2:
-                    msg = json.dumps(
-                        {"action": "set the game"})
+            # elif msg["action"] == "start the game":
+            #     player_num = len(self.room.room_members)
+            #     if player_num < 2:
+            #         msg = json.dumps(
+            #             {"action": "denied", "reason": "there must be over two players"})
+            #     elif player_num == 2:
+            #         msg = json.dumps(
+            #             {"action": "all set"})
+            #     elif player_num > 2:
+            #         msg = json.dumps(
+            #             {"action": "set the game"})
 
 # ==============================================================================
 # set the game
@@ -167,8 +170,19 @@ class Server:
 # the game finally starts
 # ==============================================================================
             # kick off means the game really begin
-            # elif msg["action"] == "kick off":
-            #     pass
+            elif msg["action"] == "kick off":
+                question, answers_name, answers_hex = generate_question_and_answers(self.color_dict)
+                msg = json.dumps(
+                        {"action": "game playing", "question": question})
+
+
+
+
+                
+
+
+            
+
                 
 
                 

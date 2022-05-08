@@ -1,5 +1,6 @@
 import socket
 import time
+import random
 
 # use local loop back address by default
 #CHAT_IP = '127.0.0.1'
@@ -71,6 +72,25 @@ def myrecv(s):
 def label_time(msg, label):
     current_time = time.strftime('%d.%m.%y,%H:%M:%S', time.localtime())
     msg[label] = current_time
+
+def generate_question_and_answers(color_dict:dict):
+    choices = [random.choice(list(color_dict)) for i in range(4)]
+    # question is also the right color
+    question = choices[0]
+    answers_name = [[question,True]]
+    answers_hex = [color_dict[question]]
+    for wrong_color in choices[1:]:
+        answers_name.append([wrong_color,False])
+        answers_hex.append(color_dict[wrong_color])
+    random.shuffle(answers_name)
+    random.shuffle(answers_hex)
+    return question, answers_name, answers_hex
+
+        
+
+
+
+
 
 #def text_proc(text, user):
     # ctime = time.strftime('%d.%m.%y,%H:%M', time.localtime())
