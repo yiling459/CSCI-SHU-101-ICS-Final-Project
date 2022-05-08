@@ -138,7 +138,7 @@ def long_entry(master, bg_color, entry_color, entry_text_color):
 #     return entry
 
 
-def question_label(master, text):
+def question_label(master, text = "question"):
     question = customtkinter.CTkLabel(
         master=master,
         fg_color="#000000",
