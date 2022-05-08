@@ -584,14 +584,14 @@ class GUI:
         self.window.mainloop()
 
 
-    def design_your_questions(self):
+    def play_game_page(self,i):
         # make the frame for contents
         frame = customtkinter.CTkFrame(
             master = self.window,
             width=1200,
             height=800,
-            bg_color = self.color_background,
-            fg_color = self.color_background,
+            bg_color = "#FFFFFF",
+            fg_color = "#FFFFFF",
             )
         frame.place(x=0,y=0,anchor="nw")
 
@@ -599,8 +599,8 @@ class GUI:
         # create title
         title = customtkinter.CTkLabel(
             master = frame,
-            text_color = self.color_on_primary,
-            text = "Question(1/5)",
+            text_color = "#5293CF",
+            text = "Question("+str(i)+"/5)",
             text_font= ("Montserrat Alternates SemiBold", 40 * -1)
             )
         title.place(relx=0.05,rely=0.05)
@@ -613,31 +613,22 @@ class GUI:
             bg_color = self.color_background,
             fg_color = self.color_background,
             )
-        frame_question.place(relx=0.5,rely=0.15,anchor='n')
+        frame_question.place(relx=0.5,rely=0.5,anchor='n')
 
         # set the question
         question = question_label(
             master = frame_question, 
-            text = "question"
+            text = "yeahyeahyeahyeahyeahyeahyeah"
             )
-        frame_question.place(relx=0.1,rely=0.9)
+        frame_question.place(relx=0.5,rely=0.25)
         
-
-        # set 4 answers
-        # answers = answers_entry(
-        #     master = frame_question_answers,
-        #     frame_background_color = self.color_background,
-        #     label_color = "#000000",
-        #     entry_colors = ["#E0EFFB","#A9CEF0","#96C3ED","#74A8D9"],
-        #     entry_text_colors = ["#000000","#000000","#000000","#000000"]
-        #     )
 
         frame_answers = customtkinter.CTkFrame(
             master = self.window,
             width=1200,
             height=800,
-            bg_color = self.color_background,
-            fg_color = self.color_background,
+            bg_color = "#FFFFFF",
+            fg_color = "#FFFFFF",
             )
         frame_answers.place(relx=0.5,rely=0.4,anchor='n')
         
@@ -650,39 +641,47 @@ class GUI:
             )
         options.place(relx=0.08,rely=0.333)
 
-        answer1 = long_entry(
-            master = frame_answers, 
-            bg_color = self.color_background, 
-            entry_color = "#FFFFFF", 
-            entry_text_color = "#000000"
-            )
-        answer1.pack(padx=0,pady=20)
 
-        answer2 = long_entry(
-            master = frame_answers, 
-            bg_color = self.color_background, 
-            entry_color = "#A9CEF0", 
-            entry_text_color = "#000000"
+        answer1 = thick_button(
+            master = frame_answers,
+            button_color = "#456765",
+            text = "234567",
+            text_color = "#456788",
             )
-        answer2.pack(padx=0,pady=20)
+        answer1.pack(padx=10,pady=10)
 
-        answer3 = long_entry(
-            master = frame_answers, 
-            bg_color = self.color_background, 
-            entry_color = "#96C3ED", 
-            entry_text_color = "#000000"
+
+        answer2 = thick_button(
+            master = frame_answers,
+            button_color = "#456765",
+            text = "234567",
+            text_color = "#456788",
             )
-        answer3.pack(padx=0,pady=20)
-        
-        answer4 = long_entry(
-            master = frame_answers, 
-            bg_color = self.color_background, 
-            entry_color = "#74A8D9", 
-            entry_text_color = "#000000"
+        answer2.pack(padx=10,pady=10)
+
+        answer3 = thick_button(
+            master = frame_answers,
+            button_color = "#456765",
+            text = "234567",
+            text_color = "#456788",
             )
-        answer4.pack(padx=0,pady=20)
-        
+        answer3.pack(padx=10,pady=10)
+
+        answer4 = thick_button(
+            master = frame_answers,
+            button_color = "#456765",
+            text = "234567",
+            text_color = "#456788",
+            )
+        answer4.pack(padx=10,pady=10)
+
+
         self.window.mainloop()
+
+    # create 5 playing pages
+    for i in range(1,6):
+        play_game_page(self,i)
+        i+=1
 
 
 
@@ -724,4 +723,4 @@ if __name__ == "__main__":
     # g.confirm_question_setter_page()
     # g.game_rules_page()
     # g.wait_question_page()
-    g.design_your_questions()
+    g.play_game_page()
