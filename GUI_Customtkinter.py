@@ -616,13 +616,12 @@ class GUI:
         frame_question.place(relx=0.5,rely=0.15,anchor='n')
 
         # set the question
-        question = question_entry(
-            master = frame_question,
-            frame_background_color = self.color_background,
-            label_color = "#FFFFFF",
-            entry_color = "#FFFFFF",
-            entry_text_color = "#000000"
+        question = question_label(
+            master = frame_question, 
+            text = "question"
             )
+        frame_question.place(relx=0.1,rely=0.9)
+        
 
         # set 4 answers
         # answers = answers_entry(
@@ -724,5 +723,5 @@ if __name__ == "__main__":
     # g.confirm_respondent_page()
     # g.confirm_question_setter_page()
     # g.game_rules_page()
-    g.wait_question_page()
-    # g.design_your_questions()
+    # g.wait_question_page()
+    g.design_your_questions()
