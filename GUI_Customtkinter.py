@@ -600,7 +600,7 @@ class GUI:
         title = customtkinter.CTkLabel(
             master = frame,
             text_color = "#5293CF",
-            text = "Question("+str(i=1)+"/5)",
+            text = "Question("+str(i)+"/5)",
             text_font= ("Montserrat Alternates SemiBold", 40 * -1)
             )
         title.place(relx=0.05,rely=0.05)
