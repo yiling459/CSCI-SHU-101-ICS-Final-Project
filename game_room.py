@@ -1,7 +1,6 @@
-S_ALONE = 0
-S_PAIRING = 1
+S_ALONE = -1
+S_PAIRING = 0
 
-S_SETTER = -1
 
 class Room:
 
@@ -13,6 +12,10 @@ class Room:
     # substitute function join(self, me)
     def enter_game(self,name):
         self.members[name] = S_ALONE
+
+    def right_answer(self,name):
+        self.members[name] += 1
+
     
     def is_member(self,name):
         return name in self.members.keys()
