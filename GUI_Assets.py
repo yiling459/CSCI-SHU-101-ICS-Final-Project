@@ -98,21 +98,37 @@ def labeled_entry(master, label_text, entry_color, entry_text_color):
     entry_frame.pack(padx=10,pady=10)
     return entry
 
-def long_entry(master, bg_color, entry_color, entry_text_color):
-    entry = customtkinter.CTkEntry(
-        master=master,
-        bg_color=bg_color,
-        fg_color=entry_color,
-        justify=tkinter.CENTER,
-        text_font=("Futura Medium", 16 * -1),
-        text_color=entry_text_color,
+# def long_entry(master, bg_color, entry_color, entry_text_color):
+#     entry = customtkinter.CTkEntry(
+#         master=master,
+#         bg_color=bg_color,
+#         fg_color=entry_color,
+#         justify=tkinter.CENTER,
+#         text_font=("Futura Medium", 16 * -1),
+#         text_color=entry_text_color,
+#         border_width=0,
+#         corner_radius=28,
+#         width=1020,
+#         height=56
+#         )
+#     entry.pack()
+#     return entry
+def thick_button(master, button_color, text, text_color):
+    button = customtkinter.CTkButton(
+        master = master,
+        bg_color="#FFFFFF",
+        fg_color=button_color,
         border_width=0,
         corner_radius=28,
-        width=1020,
-        height=56
+        text=text,
+        text_font= ("Futura Medium", 20 * -1),
+        text_color=text_color,
+        width=213,
+        height=360
         )
-    entry.pack()
-    return entry
+    button.pack(padx=5,pady=10,side = tkinter.LEFT)
+    return button
+
 
 # def question_entry(master,frame_background_color,label_color,entry_color,entry_text_color):
 #     question_frame =  customtkinter.CTkFrame(
@@ -138,16 +154,17 @@ def long_entry(master, bg_color, entry_color, entry_text_color):
 #     return entry
 
 
-def question_label(master, text):
+def question_label(master, text="question yeahyeahyeahyeahyeahyeah"):
     question = customtkinter.CTkLabel(
         master=master,
-        fg_color="#000000",
+        fg_color="#5293CF",
         corner_radius=0,
         text=text,     
-        justify=tkinter.LEFT,
-        text_font=("Futura Medium", 12 * -1),
-        text_color="#FFFFFF"
+        justify=tkinter.CENTER,
+        text_font=("Futura Medium", 36 * -1),
+        text_color="#000000"
         )
+    question.pack()
 
 
 # a brutal way to write entries for answers
