@@ -40,6 +40,7 @@ class Server:
         self.all_sockets.append(sock)
 
     def login(self, sock):
+        print("login function is called")
         try:
             msg = json.loads(myrecv(sock))
             print("login:", msg)
@@ -47,7 +48,7 @@ class Server:
 
                 if msg["action"] == "login":
                     name = msg["name"]
-
+                    role = msg["role"]
                     if self.room.is_member(name) != True:
                         # move socket from new clients list to logged clients
                         self.new_players.remove(sock)
@@ -58,8 +59,10 @@ class Server:
                         print(name + ' logged in')
                         self.room.enter_game(name)
                         # maybe change the send later
+
                         mysend(sock, json.dumps(
-                            {"action": "login", "status": "ok"}))
+                            {"action": "login", "status": "ok", "role": role}))
+                        print("message sent")
 
                     else: # a player under this name has already logged in
                         # duplicate? I may change it to "retry" later
@@ -71,13 +74,14 @@ class Server:
             else:  # client died unexpectedly
                 self.logout(sock)
         except:
+            print("something goes wrong")
             self.all_sockets.remove(sock)
 
     def logout(self, sock):
         # remove sock from all lists
         name = self.logged_sock2name[sock]
         # pkl.dump(self.indices[name], open(name + '.idx', 'wb'))
-        del self.indices[name]
+        # del self.indices[name]
         del self.logged_name2sock[name]
         del self.logged_sock2name[sock]
         self.all_sockets.remove(sock)
@@ -129,7 +133,7 @@ class Server:
                         to_sock = self.logged_name2sock[player]
                         # status here means waiting for the game to start, may change later
                         # action here may also be changed later
-                        print(player)
+                        print(to_sock)
                         mysend(to_sock, json.dumps(
                             {"action": "pairing", "status": "waiting", "from": from_name}))
                 elif self.room.find_room(room_name) == False:

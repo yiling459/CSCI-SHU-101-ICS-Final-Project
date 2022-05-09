@@ -69,10 +69,6 @@ def myrecv(s):
         msg += text
     return (msg)
 
-def label_time(msg, label):
-    current_time = time.strftime('%d.%m.%y,%H:%M:%S', time.localtime())
-    msg[label] = current_time
-
 def generate_question_and_answers(color_dict:dict):
     choices = [random.choice(list(color_dict)) for i in range(4)]
     # question is also the right color
@@ -88,9 +84,9 @@ def generate_question_and_answers(color_dict:dict):
 
         
 
-
-
-
+def label_time(msg, label):
+    current_time = time.strftime('%d.%m.%y,%H:%M:%S', time.localtime())
+    msg[label] = current_time
 
 #def text_proc(text, user):
     # ctime = time.strftime('%d.%m.%y,%H:%M', time.localtime())

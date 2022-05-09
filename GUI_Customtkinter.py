@@ -24,10 +24,16 @@ customtkinter.set_default_color_theme("blue")
 
 class GUI:
     def __init__(self, send, recv, state, s):
-        self.window = customtkinter.CTk()
-        # init the canvas here
-        self.window.geometry("1200x800")
-        self.window.configure(bg = "#5294D0")
+        # create the pairing page window first
+        self.pairing_window = customtkinter.CTk()
+        self.pairing_window.geometry("1200x800")
+        self.pairing_window.configure(bg = "#5294D0")
+        self.pairing_window.withdraw()
+
+        # self.window = customtkinter.CTk()
+        # # init the canvas here
+        # self.window.geometry("1200x800")
+        # self.window.configure(bg = "#5294D0")
         # self.Window.withdraw()
         self.canvas_width = 1200.0
         self.canvas_height = 800.0
@@ -52,31 +58,85 @@ class GUI:
         # init the member_lst of the room
         self.members_lst = []
 
+    def reopen_window(self):
+        self.pairing_window.destroy()
+        self.pairing_window = customtkinter.CTk()
+        self.pairing_window.geometry("1200x800")
+        self.pairing_window.configure(bg = "#5294D0")
+        self.pairing_window.withdraw()
+
+    
+    # this is used for receiving all the messages from the server, and control the gui
+    def controller(self):
+        self.start_page()
+        print("controller is working")
+        while True:
+            self.response = json.loads(self.recv())
+            if len(self.response) > 0:
+                print(self.response)
+                # handle login here
+                if self.response["action"] == "login":
+                    if self.response["status"] == "ok":
+                        if self.response["role"] == "create":
+                            self.create_page()
+                        elif self.response["role"] == "join":
+                            self.join_page()
+                    elif self.response["status"] == "duplicate":
+                        self.start_page(notification="This name has been registered. Please enter another")
+                
+                # handle create room or join room here
+                elif self.response["action"] == "create":
+                    if self.response["statue"] == "success":
+                        self.members_lst = self.response["members"]
+                        self.reopen_window()
+                        self.pairing_page()
+                    elif self.response["status"] == "duplicate":
+                        self.create_page(notification="This room has been registered. Please enter another:")
+                elif self.response["action"] == "join":
+                    if self.response["action"] == "success":
+                        self.members_lst = self.response["members"]
+                        self.reopen_window
+                        self.pairing_page()
+                    elif self.response["status"] == "no such room":
+                        self.join_page(notification="No such room. Please enter another:")
+
+                # handle update room members list here
+                elif self.response["action"] == "pairing":
+                        self.members_lst.append(self.response["from"])
+                        self.pairing_page()
+
+
+
+
     def start_page(self,notification="Enter Your Name"):
-        # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#FFFFFF",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
-        # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("start_page_background.png"))
-        canvas.create_image(0,
-                            0,
-                            anchor = 'nw',
-                            image = background_image)
+        window = customtkinter.CTk()
+        # init the canvas here
+        window.geometry("1200x800")
+        window.configure(bg = "#5294D0")
+        # # create the CTKcanvas
+        # canvas = customtkinter.CTkCanvas(window,
+        #                                 bg = "#FFFFFF",
+        #                                 height = self.canvas_height,
+        #                                 width = self.canvas_width,
+        #                                 bd = 0,
+        #                                 highlightthickness = 0,
+        #                                 relief = "ridge")
+        # canvas.place(x=0,y=0)
+        # # create the background image
+        # background_image = tkinter.PhotoImage(file = relative_to_assets("start_page_background.png"))
+        # canvas.create_image(0,
+        #                     0,
+        #                     anchor = 'nw',
+        #                     image = background_image)
         
 
         # make the frame for contents
         frame = customtkinter.CTkFrame(
-            master = self.window,
+            master = window,
             width=417,
             height=282,
             bg_color="#000000",
-            fg_color="#000000",
+            fg_color="#000000"
             )
         frame.place(relx=0.5,y=454,anchor="n")
 
@@ -86,40 +146,44 @@ class GUI:
 
         # create new room button
         new_room_button = slim_button(frame, self.color_secondary, "New Room", self.color_on_secondary)
-        new_room_button.config(command = lambda: self.register_name(name_entry.get(),"create"))
+        new_room_button.config(command = lambda: self.register_name(name_entry.get(),"create",window))
         
 
         # create join room button
         join_room_button = slim_button(frame, self.color_primary,"Join Room", self.color_on_primary)
-        join_room_button.config(command = lambda: self.register_name(name_entry.get(),"join"))
+        join_room_button.config(command = lambda: self.register_name(name_entry.get(),"join",window))
           
-        self.window.mainloop()
+        window.mainloop()
 
-    def register_name(self, player_name, action):
-        if len(player_name) > 0:
-            msg = json.dumps({"action": "login", "name": player_name})
+    def register_name(self, player_name, role, window):
+        window.destroy()
+        print("function of register name is working")
+        self.player_name = player_name
+        print(self.player_name)
+        if len(self.player_name) > 0:
+            msg = json.dumps({"action": "login", "role": role, "name": self.player_name})
             self.send(msg)
-            response = json.loads(self.recv())
-            if response["status"] == "ok":
-                self.state.set_state(S_LOGGEDIN)
-                self.state.set_myname(player_name)
-                if action == "create":
-                    self.create_page(player_name)
-                elif action == "join":
-                    self.join_page(player_name)
-            elif response["status"] == "duplicate":
-                self.start_page(notification="This name has been registered. Please enter another")
-            # figure out why later
-            # # treading means running another function at the same time
-            # process = threading.Thread(target=self.proc)
-            # process.daemon = True
-            # process.start()
+            print(msg)
+            # response = json.loads(self.recv())
+            # if response["status"] == "ok":
+            #     # self.state.set_state(S_LOGGEDIN)
+            #     # self.state.set_myname(player_name)
+            #     # if action == "create":
+            #     #     self.create_page(player_name)
+            #     # elif action == "join":
+            #     #     self.join_page(player_name)
+            # elif response["status"] == "duplicate":
+            #     self.start_page(notification="This name has been registered. Please enter another")
 
 
 
-    def create_page(self, player_name="empty", notification="Enter Room Name:"):
+    def create_page(self, notification="Enter Room Name:"):
+        window = customtkinter.CTk()
+        # init the canvas here
+        window.geometry("1200x800")
+        window.configure(bg = "#5294D0")
         # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
+        canvas = customtkinter.CTkCanvas(window,
                                         bg = "#FFFFFF",
                                         height = self.canvas_height,
                                         width = self.canvas_width,
@@ -139,7 +203,7 @@ class GUI:
 
         # make the frame for contents
         frame = customtkinter.CTkFrame(
-            master = self.window,
+            master = window,
             width=417,
             height=431,
             bg_color="#000000",
@@ -149,23 +213,28 @@ class GUI:
 
         # create entry
         room_name_entry = labeled_entry(frame,notification,self.color_tertiary,self.color_on_tertiary)
+        self.room_name = room_name_entry.get()
         
 
         # create continue button
         new_room_button = slim_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
-        new_room_button.config(command = lambda: self.register_room(player_name,room_name_entry.get(),"create"))
+        new_room_button.config(command = lambda: self.register_room("create"))
         
         # create back button
         back= slim_button(frame,self.color_primary,"BACK",self.color_on_primary)
         back.config(command = lambda: self.start_page())
 
           
-        self.window.mainloop()
+        window.mainloop()
 
 
-    def join_page(self, player_name="empty", notification="Enter room name:"):
+    def join_page(self, notification="Enter room name:"):
+        window = customtkinter.CTk()
+        # init the canvas here
+        window.geometry("1200x800")
+        window.configure(bg = "#5294D0")
         # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
+        canvas = customtkinter.CTkCanvas(window,
                                         bg = "#FFFFFF",
                                         height = self.canvas_height,
                                         width = self.canvas_width,
@@ -185,7 +254,7 @@ class GUI:
 
         # make the frame for contents
         frame = customtkinter.CTkFrame(
-            master = self.window,
+            master = window,
             width=417,
             height=431,
             bg_color="#000000",
@@ -195,67 +264,70 @@ class GUI:
 
         # create entry
         room_name_entry = labeled_entry(frame,notification,self.color_tertiary,self.color_on_tertiary)
+        self.room_name = room_name_entry.get()
         
 
         # create continue button
         continue_button = slim_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
-        continue_button.config(command = lambda: self.register_room(player_name,room_name_entry.get(),"join"))
+        continue_button.config(command = lambda: self.register_room("join"))
         
         # create back button
         back= slim_button(frame,self.color_primary,"BACK",self.color_on_primary)
         back.config(command = lambda: self.start_page())
 
 
-        self.window.mainloop()
+        window.mainloop()
 
-    def register_room(self, player_name, room_name, action):
-        if len(room_name) > 0:
+    def register_room(self,action):
+
+        if len(self.room_name) > 0:
             if action == "create":
-                msg = json.dumps({"action": action, "name": room_name})
+                msg = json.dumps({"action": action, "name": self.room_name})
             elif action == "join":
-                msg = json.dumps({"action": action, "name": room_name})
+                msg = json.dumps({"action": action, "name": self.room_name})
             self.send(msg)
-            response = json.loads(self.recv())
+            # response = json.loads(self.recv())
             # create&join share the same
-            if response["status"] == "success":
-                self.members_lst = response["members"]
-                self.state.set_state(S_PAIRING)
-                self.pairing_page(room_name)
-                # for debugging
-                # self.pairing_page(room_name)
-                print("Here is fine")
+            # if response["status"] == "success":
+            #     self.members_lst = response["members"]
+            #     self.state.set_state(S_PAIRING)
+            #     self.pairing_page()
+            #     # for debugging
+            #     # self.pairing_page(room_name)
+            #     print("Here is fine")
 
-            # create only
-            elif response["status"] == "duplicate":
-                self.create_page(player_name, notification="This room has been registered. Please enter another:")
-            # join only
-            elif response["status"] == "no such room":
-                self.join_page(player_name, notification="No such room. Please enter another:")
-            elif response["status"] == "waiting":
-                self.members_lst.append(response["from"])
-            else:
-                print("Wrong!!!")
-
-
+            # # create only
+            # elif response["status"] == "duplicate":
+            #     self.create_page(player_name, notification="This room has been registered. Please enter another:")
+            # # join only
+            # elif response["status"] == "no such room":
+            #     self.join_page(player_name, notification="No such room. Please enter another:")
+            # elif response["status"] == "waiting":
+            #     self.members_lst.append(response["from"])
+            # else:
+            #     print("Wrong!!!")
 
 
-    def pairing_page(self,room_name="init"):
-        self.room_name = room_name
+
+
+    def pairing_page(self):
+        
+        self.pairing_window.deiconify()
 
 
         background_left = customtkinter.CTkFrame(
-            master = self.window,
+            master = self.pairing_window,
             width=425,
             height=800,
             fg_color=self.color_primary,
             corner_radius=0
             )
         background_left.place(x=0,y=0)
-        self.window.config(bg="#FFFFFF")
+        self.pairing_window.config(bg="#FFFFFF")
         room = customtkinter.CTkLabel(
             master = background_left,
             text_color = self.color_on_primary,
-            text = "Room:\n" + room_name,
+            text = "Room:\n" + self.room_name,
             text_font= ("Montserrat Alternates SemiBold", 40 * -1),
             justify = tkinter.LEFT
             )
@@ -279,7 +351,7 @@ class GUI:
         guide.place(relx=0.1, rely=0.4)
 
         background_right = customtkinter.CTkFrame(
-            master = self.window,
+            master = self.pairing_window,
             width=775,
             height=800,
             fg_color="#FFFFFF",
@@ -317,59 +389,27 @@ class GUI:
                 fg_color=self.color_secondary
                 ).pack(side=tkinter.LEFT,padx=10)
                 
-        # maybe bug here
-        # update when some one enters
-        # response = json.loads(self.recv())
-        # if len(response) > 0:
-        #     if response["action"] == "pairing":
-        #         members_lst.append(response["from"])
-        #         customtkinter.CTkLabel(
-        #             master = member_frame,
-        #             text = player,
-        #             text_color = self.color_on_secondary,
-        #             text_font = ("Montserrat Alternates SemiBold", 24 * -1),
-        #             bg_color=self.color_primary,
-        #             fg_color=self.color_secondary
-        #             ).pack()
 
-        
-        update_process = threading.Thread(target=self.update_member)
-        update_process.daemon = True
-        update_process.start()
+        self.pairing_window.mainloop()
 
-        join_button = bold_button(
-            master=background_right,
-            button_color=self.color_primary,
-            text="Join Game",
-            text_color=self.color_on_primary
-            )
-        join_button.config(bg_color = "#FFFFFF")
-        join_button.place(relx=0.1,rely=0.75)
-
-        # try:
-        #     response = json.loads(self.recv())
-        #     print(response)
-        #     if response["action"] == "pairing":
-        #         self.members_lst.append(response["from"])
-        #         self.pairing_page(room_name)
-                
-        # except:
-        #     print("except")
-        #     pass
-
-        self.window.mainloop()
-
-    def update_member(self):
-        while True:
-            try:
-                response = json.loads(self.recv())
-            # print(self.recv())
-                if response["action"] == "pairing":
-                    self.members_lst.append(response["from"])
-                    self.pairing_page(self.room_name)
-            except:
-                pass
-            
+    # def update_member(self):
+    #     # while True:
+    #     #     try:
+    #     #         response = json.loads(self.recv())
+    #     #         print(self.response)
+    #     #         if response["action"] == "pairing":
+    #     #             self.members_lst.append(response["from"])
+    #     #             self.pairing_page(self.room_name)
+    #     #     except:
+    #     #         pass
+    
+    #     while True:
+    #         response = json.loads(self.recv())
+    #         print(response)
+    #         if len(response) > 0:
+    #             if response["action"] == "pairing":
+    #                 self.members_lst.append(response["from"])
+    #                 self.pairing_page(self.room_name)
             
 
 
@@ -377,8 +417,13 @@ class GUI:
 
     
     def choose_identity_page(self):
+
+        window = customtkinter.CTk()
+        # init the canvas here
+        window.geometry("1200x800")
+        window.configure(bg = "#5294D0")
         # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
+        canvas = customtkinter.CTkCanvas(window,
                                         bg = "#FFFFFF",
                                         height = self.canvas_height,
                                         width = self.canvas_width,
@@ -398,7 +443,7 @@ class GUI:
 
         # make the frame for contents
         frame = customtkinter.CTkFrame(
-            master = self.window,
+            master = window,
             width=417,
             height=431,
             bg_color="#000000",
@@ -417,7 +462,7 @@ class GUI:
         respondent_button.config(command = lambda: print(name_entry.get()))
 
           
-        self.window.mainloop()
+        window.mainloop()
 
 
     def confirm_respondent_page(self):
@@ -678,10 +723,10 @@ class GUI:
 
         self.window.mainloop()
 
-    # create 5 playing pages
-    for i in range(1,6):
-        play_game_page(self,i)
-        i+=1
+    # # create 5 playing pages
+    # for i in range(1,6):
+    #     play_game_page(self,i)
+    #     i+=1
 
 
 
@@ -705,7 +750,13 @@ class GUI:
             #     self.textCons.see(END)
 
     def run(self):
-        self.start_page()    
+        # open the controller as another thread
+        # update_process = threading.Thread(target=self.controller)
+        # update_process.daemon = True
+        # update_process.start()
+        self.start_page()  
+        # self.controller()
+        
         # self.join_page()
         # self.create_page()
         # self.choose_identity_page()
@@ -714,7 +765,7 @@ class GUI:
 
 if __name__ == "__main__":
     g = GUI('','','','')
-    # g.start_page()
+    g.start_page()
     # g.create_page()
     # g.join_page()
     # g.pairing_page()
@@ -723,4 +774,4 @@ if __name__ == "__main__":
     # g.confirm_question_setter_page()
     # g.game_rules_page()
     # g.wait_question_page()
-    g.play_game_page()
+    # g.play_game_page()
