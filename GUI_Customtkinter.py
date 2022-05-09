@@ -25,10 +25,10 @@ customtkinter.set_default_color_theme("blue")
 class GUI:
     def __init__(self, send, recv, state, s):
         # create the pairing page window first
-        self.pairing_window = customtkinter.CTk()
-        self.pairing_window.geometry("1200x800")
-        self.pairing_window.configure(bg = "#5294D0")
-        self.pairing_window.withdraw()
+        # self.pairing_window = customtkinter.CTk()
+        # self.pairing_window.geometry("1200x800")
+        # self.pairing_window.configure(bg = "#5294D0")
+        # self.pairing_window.withdraw()
 
         # self.window = customtkinter.CTk()
         # # init the canvas here
@@ -58,12 +58,12 @@ class GUI:
         # init the member_lst of the room
         self.members_lst = []
 
-    def reopen_window(self):
-        self.pairing_window.destroy()
-        self.pairing_window = customtkinter.CTk()
-        self.pairing_window.geometry("1200x800")
-        self.pairing_window.configure(bg = "#5294D0")
-        self.pairing_window.withdraw()
+    # def reopen_window(self):
+    #     pairing_window.destroy()
+    #     pairing_window = customtkinter.CTk()
+    #     pairing_window.geometry("1200x800")
+    #     pairing_window.configure(bg = "#5294D0")
+    #     pairing_window.withdraw()
 
     
     # this is used for receiving all the messages from the server, and control the gui
@@ -88,14 +88,14 @@ class GUI:
                 elif self.response["action"] == "create":
                     if self.response["statue"] == "success":
                         self.members_lst = self.response["members"]
-                        self.reopen_window()
+                        self.pairing_window.destroy()
                         self.pairing_page()
                     elif self.response["status"] == "duplicate":
                         self.create_page(notification="This room has been registered. Please enter another:")
                 elif self.response["action"] == "join":
                     if self.response["action"] == "success":
                         self.members_lst = self.response["members"]
-                        self.reopen_window
+                        self.pairing_window.destroy()
                         self.pairing_page()
                     elif self.response["status"] == "no such room":
                         self.join_page(notification="No such room. Please enter another:")
@@ -103,6 +103,7 @@ class GUI:
                 # handle update room members list here
                 elif self.response["action"] == "pairing":
                         self.members_lst.append(self.response["from"])
+                        self.pairing_window.destroy()
                         self.pairing_page()
 
 
@@ -311,9 +312,8 @@ class GUI:
 
 
     def pairing_page(self):
-        
-        self.pairing_window.deiconify()
-
+        self.pairing_window = customtkinter.CTkToplevel()
+        self.pairing_window.geometry("1200x800")
 
         background_left = customtkinter.CTkFrame(
             master = self.pairing_window,
