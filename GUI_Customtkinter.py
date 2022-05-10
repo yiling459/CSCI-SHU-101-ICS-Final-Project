@@ -297,18 +297,18 @@ class GUI:
             )
         title.place(relx=0.5,y=157,anchor="center")
 
-        member_frame = customtkinter.CTkFrame(
+        self.member_frame = customtkinter.CTkFrame(
             master = background_right,
             bg_color="#FFFFFF",
             fg_color="#FFFFFF"
             )
-        member_frame.place(relx=0.1,y=220)
+        self.member_frame.place(relx=0.1,y=220)
 
 
         # show who are in the room
         for player in self.members_lst:
             customtkinter.CTkLabel(
-                master = member_frame,
+                master = self.member_frame,
                 text = player,
                 text_color = self.color_on_secondary,
                 text_font = ("Montserrat Alternates SemiBold", 24 * -1),
@@ -333,9 +333,9 @@ class GUI:
         #             ).pack()
 
         
-        update_process = threading.Thread(target=self.update_member)
-        update_process.daemon = True
-        update_process.start()
+        # update_process = threading.Thread(target=self.update_member)
+        # update_process.daemon = True
+        # update_process.start()
 
         join_button = bold_button(
             master=background_right,
@@ -345,6 +345,17 @@ class GUI:
             )
         join_button.config(bg_color = "#FFFFFF")
         join_button.place(relx=0.1,rely=0.75)
+
+
+        self.update = True
+        self.response = {}
+
+        get_response = threading.Thread(target=self.get_response)
+        get_response.daemon = True
+        get_response.start()
+
+        self.member_frame.after(1000,lambda:self.update_member())
+
 
         # try:
         #     response = json.loads(self.recv())
@@ -359,16 +370,29 @@ class GUI:
 
         self.window.mainloop()
 
+    def get_response(self):
+        while self.update:
+            self.response = json.loads(self.recv())
+
     def update_member(self):
-        while True:
-            try:
-                response = json.loads(self.recv())
-            # print(self.recv())
-                if response["action"] == "pairing":
-                    self.members_lst.append(response["from"])
-                    self.pairing_page(self.room_name)
-            except:
-                pass
+        if self.update == True:
+            if len(self.response) > 0:
+                if self.response["action"] == "pairing":
+                    player = self.response["from"]
+                    if player not in self.members_lst:
+                        self.members_lst.append(player)
+                        customtkinter.CTkLabel(
+                            master = self.member_frame,
+                            text = player,
+                            text_color = self.color_on_secondary,
+                            text_font = ("Montserrat Alternates SemiBold", 24 * -1),
+                            corner_radius=5,
+                            bg_color=self.color_on_primary,
+                            fg_color=self.color_secondary
+                            ).pack(side=tkinter.LEFT,padx=10)
+            self.member_frame.after(1000,lambda:self.update_member())                   
+
+    
             
             
 
@@ -539,51 +563,55 @@ class GUI:
         self.window.mainloop()
 
 
-    def wait_question_page(self):
-        # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#000000",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
+    # def wait_question_page(self):
+    #     # create the CTKcanvas
+    #     canvas = customtkinter.CTkCanvas(self.window,
+    #                                     bg = "#000000",
+    #                                     height = self.canvas_height,
+    #                                     width = self.canvas_width,
+    #                                     bd = 0,
+    #                                     highlightthickness = 0,
+    #                                     relief = "ridge")
+    #     canvas.place(x=0,y=0)
 
 
-        # make the frame for contents
-        frame = customtkinter.CTkFrame(
-            master = canvas,
-            width=1200,
-            height=800,
-            bg_color="#000000",
-            fg_color="#000000",
-            )
-        frame.place(x=300,y=100,anchor="n")
+    #     # make the frame for contents
+    #     frame = customtkinter.CTkFrame(
+    #         master = canvas,
+    #         width=1200,
+    #         height=800,
+    #         bg_color="#000000",
+    #         fg_color="#000000",
+    #         )
+    #     frame.place(x=300,y=100,anchor="n")
 
 
-        # create "LOADING..."
-        reminder = customtkinter.CTkLabel(
-            master = frame,
-            text_color = self.color_primary,
-            text = "LOADING...",
-            text_font= ("Montserrat Alternates SemiBold", 96 * -1),
-            )
-        reminder.place(relx=0.5,rely=0.2)
+    #     # create "LOADING..."
+    #     reminder = customtkinter.CTkLabel(
+    #         master = frame,
+    #         text_color = self.color_primary,
+    #         text = "LOADING...",
+    #         text_font= ("Montserrat Alternates SemiBold", 96 * -1),
+    #         )
+    #     reminder.place(relx=0.5,rely=0.2)
 
 
-        #create "Wait until all the questions have been settled."
-        reminder = customtkinter.CTkLabel(
-            master = frame,
-            text_color = self.color_primary,
-            text = "Wait until all the questions\nhave been settled.\nThe game will begin at any time.",
-            text_font= ("Geo", 40 * -1),
-            )
-        reminder.place(relx=0.55,rely=0.35)
+    #     #create "Wait until all the questions have been settled."
+    #     reminder = customtkinter.CTkLabel(
+    #         master = frame,
+    #         text_color = self.color_primary,
+    #         text = "Wait until all the questions\nhave been settled.\nThe game will begin at any time.",
+    #         text_font= ("Geo", 40 * -1),
+    #         )
+    #     reminder.place(relx=0.55,rely=0.35)
 
-        self.window.mainloop()
+    #     self.window.mainloop()
 
-
+    # create 5 playing pages
+    def loop(i):
+        for i in range(1,6):
+            play_game_page()
+            i+=1
     def play_game_page(self,i):
         # make the frame for contents
         frame = customtkinter.CTkFrame(
@@ -677,11 +705,6 @@ class GUI:
 
 
         self.window.mainloop()
-
-    # create 5 playing pages
-    for i in range(1,6):
-        play_game_page(self,i)
-        i+=1
 
 
 
