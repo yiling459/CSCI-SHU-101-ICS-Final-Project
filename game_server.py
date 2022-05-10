@@ -171,11 +171,27 @@ class Server:
 # the game finally starts
 # ==============================================================================
             # kick off means the game really begin
-            elif msg["action"] == "kick off":
+            elif msg["action"] == "game start":
+                room_name = msg["from room"]
                 question, answers_name, answers_hex = generate_question_and_answers(self.color_dict)
-                msg = json.dumps(
-                        {"action": "game playing", "question": question,"answers_name":answers_name,"answers_hex":answers_hex})
-                mysend(from_sock, msg)
+                for player in self.room.room_members(room_name):
+                    msg = json.dumps({"action":"game start", "status":"success"})
+                    to_sock = self.logged_name2sock[player]
+                    mysend(to_sock, msg)
+                time.sleep(5)
+                for player in self.room.room_members(room_name):
+                    msg = json.dumps({"action":"receive question","question":question,"answers_name":answers_name,"answers_hex":answers_hex})
+                    to_sock = self.logged_name2sock[player]
+                    mysend(to_sock, msg)
+
+                
+                    
+
+            # elif msg["action"] == "kick off":
+            #     question, answers_name, answers_hex = generate_question_and_answers(self.color_dict)
+            #     msg = json.dumps(
+            #             {"action": "game playing", "question": question,"answers_name":answers_name,"answers_hex":answers_hex})
+            #     mysend(from_sock, msg)
             
             elif msg["action"] == "right choice made":
                 self.total_answers_recv += 1

@@ -1,6 +1,8 @@
 from pathlib import Path
 from turtle import bgcolor
 from xml.etree.ElementTree import TreeBuilder
+
+from click import command
 from game_utils import *
 from GUI_Assets import *
 import tkinter
@@ -8,6 +10,7 @@ import json
 # what is threading??? select???
 import threading
 import select
+import sys
 # from numpy import imag
 
 OUTPUT_PATH = Path(__file__).parent
@@ -345,16 +348,17 @@ class GUI:
             )
         join_button.config(bg_color = "#FFFFFF")
         join_button.place(relx=0.1,rely=0.75)
+        join_button.config(command = lambda:self.send_game_start_msg())
 
 
         self.update = True
         self.response = {}
 
-        get_response = threading.Thread(target=self.get_response)
-        get_response.daemon = True
-        get_response.start()
+        self.response_threading = threading.Thread(target=self.get_response)
+        self.response_threading.daemon = True
+        self.response_threading.start()
 
-        self.member_frame.after(1000,lambda:self.update_member())
+        self.member_frame.after(10,lambda:self.update_member())
 
 
         # try:
@@ -369,6 +373,11 @@ class GUI:
         #     pass
 
         self.window.mainloop()
+    
+    def send_game_start_msg(self):
+        msg = json.dumps({"action":"game start", "from room":self.room_name})
+        self.send(msg)
+
 
     def get_response(self):
         while self.update:
@@ -390,10 +399,16 @@ class GUI:
                             bg_color=self.color_on_primary,
                             fg_color=self.color_secondary
                             ).pack(side=tkinter.LEFT,padx=10)
-            self.member_frame.after(1000,lambda:self.update_member())                   
+                elif self.response["action"] == "game start":
+                    self.game_rule_page()
+                    self.update = False
+                    sys.exit()
+
+            self.member_frame.after(10,lambda:self.update_member())                   
 
 
     def game_rule_page(self):
+        
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#000000",
@@ -435,10 +450,43 @@ class GUI:
             )
         reminder.place(relx=0.5,rely=0.35)
 
+        # init the count down timer here
+        count_down = 5
+
+        reminder = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "Game will start in "+str(count_down),
+            text_font= ("Geo", 38 * -1),
+            )
+        reminder.place(relx=0.5,rely=0.5)
+
+        frame.after(1000,lambda: self.count_down_game_rule(frame,count_down-1))
+
         self.window.mainloop()
+    
+    def count_down_game_rule(self,frame,count_down):
+        if count_down == 0:
+            self.response = json.load(self.recv())
+            question =self.response["question"]
+            answers_name=self.response["answers_name"]
+            answers_hex=self.response["answers_hex"]
+            color_name_lst=[question]
+            color_hex_lst=answers_hex
+            idx = 0
+            for k in answers_name.key():
+                color_name_lst.append(k)
+                if k == question:
+                    right_idx = idx
+                idx += 1
+
+            self.play_game_page(color_name_lst,color_hex_lst,right_idx)
+        else:
+            frame.after(1000,lambda: self.count_down_game_rule(frame,count_down-1))
+            
 
     
-    def play_game_page(self, question_color,question_num,button_color1,button_color2,button_color3,button_color4):
+    def play_game_page(self, question_color=["question","color1","color2","color3","color4"],question_num=0,button_color=["#000000","#000000","#000000","#000000"],right_idx=1):
         # make the frame for contents
         frame = customtkinter.CTkFrame(
             master = self.window,
@@ -472,7 +520,7 @@ class GUI:
         # set the question
         question = question_label(
             master = frame_question, 
-            text = question_color
+            text = question_color[0]
             )
         frame_question.place(relx=0.5,rely=0.185)
         
@@ -498,39 +546,48 @@ class GUI:
 
         answer1 = thick_button(
             master = frame_answers,
-            button_color = button_color1,
-            text = question_color,
-            text_color = "#FFFFFF",
+            button_color = button_color[0],
+            text = question_color[1],
+            text_color = "#FFFFFF"
             )
-        answer1.pack(padx=10,pady=10)
+        answer1.config(command = lambda: self.change_button_color(answer1,True))
+        # answer1.config(border_color = "blue")
+        # answer1.pack(padx=10,pady=10)
+        
 
 
         answer2 = thick_button(
             master = frame_answers,
-            button_color = button_color2,
-            text = question_color,
+            button_color = button_color[1],
+            text = question_color[2],
             text_color = "#FFFFFF",
             )
-        answer2.pack(padx=10,pady=10)
+        # answer2.pack(padx=10,pady=10)
 
         answer3 = thick_button(
             master = frame_answers,
-            button_color = button_color3,
-            text = question_color,
+            button_color = button_color[2],
+            text = question_color[3],
             text_color = "#FFFFFF",
             )
-        answer3.pack(padx=10,pady=10)
+        # answer3.pack(padx=10,pady=10)
 
         answer4 = thick_button(
             master = frame_answers,
-            button_color = button_color4,
-            text = question_color,
+            button_color = button_color[3],
+            text = question_color[4],
             text_color = "#FFFFFF",
             )
-        answer4.pack(padx=10,pady=10)
+        # answer4.pack(padx=10,pady=10)
 
 
         self.window.mainloop()
+
+    def change_button_color(self,button,label):
+        if label == True:
+            button.config(border_color="green")
+        elif label == False:
+            button.config(border_color="red")
 
     def billboard_page(self,round_num):
         # create the CTKcanvas
@@ -638,7 +695,7 @@ if __name__ == "__main__":
     # g.pairing_page()
     # g.choose_identity_page()
     # g.game_rule_page()
-    # g.play_game_page()
+    g.play_game_page()
     # g.billboard_page()
-    g.play()
+    # g.play()
     # g.player_ranking_page()

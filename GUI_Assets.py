@@ -118,7 +118,8 @@ def thick_button(master, button_color, text, text_color):
         master = master,
         bg_color="#FFFFFF",
         fg_color=button_color,
-        border_width=0,
+        border_width=5,
+        border_color="red",
         corner_radius=28,
         text=text,
         text_font= ("Futura Medium", 20 * -1),
@@ -126,7 +127,7 @@ def thick_button(master, button_color, text, text_color):
         width=213,
         height=360
         )
-    button.pack(padx=5,pady=10,side = tkinter.LEFT)
+    button.pack(padx=10,pady=10,side = tkinter.LEFT)
     return button
 
 
