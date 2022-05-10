@@ -474,7 +474,7 @@ class GUI:
             master = frame_question, 
             text = "green"
             )
-        question.place(relx=0.5,rely=0.25)
+        frame_question.place(relx=0.5,rely=0.25)
         
 
         frame_answers = customtkinter.CTkFrame(
@@ -622,8 +622,8 @@ class GUI:
             #     self.textCons.see(END)
     def play(self):
         for i in range(1,6):
-            play_game_page(self,i)
-            billboard_page(self,i)
+            self.play_game_page(i)
+            self.billboard_page(i)
             i+=1
         self.window.mainloop()    
 
