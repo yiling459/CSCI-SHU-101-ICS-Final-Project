@@ -438,7 +438,7 @@ class GUI:
         self.window.mainloop()
 
     
-    def play_game_page(self, question_num):
+    def play_game_page(self, question_color,question_num,button_color1,button_color2,button_color3,button_color4):
         # make the frame for contents
         frame = customtkinter.CTkFrame(
             master = self.window,
@@ -472,7 +472,7 @@ class GUI:
         # set the question
         question = question_label(
             master = frame_question, 
-            text = "green"
+            text = question_color
             )
         frame_question.place(relx=0.5,rely=0.185)
         
@@ -498,8 +498,8 @@ class GUI:
 
         answer1 = thick_button(
             master = frame_answers,
-            button_color = "#EDDA96",
-            text = "green",
+            button_color = button_color1,
+            text = question_color,
             text_color = "#FFFFFF",
             )
         answer1.pack(padx=10,pady=10)
@@ -507,24 +507,24 @@ class GUI:
 
         answer2 = thick_button(
             master = frame_answers,
-            button_color = "#98ED96",
-            text = "green",
+            button_color = button_color2,
+            text = question_color,
             text_color = "#FFFFFF",
             )
         answer2.pack(padx=10,pady=10)
 
         answer3 = thick_button(
             master = frame_answers,
-            button_color = "#9896ED",
-            text = "green",
+            button_color = button_color3,
+            text = question_color,
             text_color = "#FFFFFF",
             )
         answer3.pack(padx=10,pady=10)
 
         answer4 = thick_button(
             master = frame_answers,
-            button_color = "#ED96B5",
-            text = "green",
+            button_color = button_color4,
+            text = question_color,
             text_color = "#FFFFFF",
             )
         answer4.pack(padx=10,pady=10)
