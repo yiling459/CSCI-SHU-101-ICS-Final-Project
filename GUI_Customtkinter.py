@@ -392,18 +392,11 @@ class GUI:
                             ).pack(side=tkinter.LEFT,padx=10)
             self.member_frame.after(1000,lambda:self.update_member())                   
 
-    
-            
-            
 
-
-
-
-    
-    def choose_identity_page(self):
+    def game_rule_page(self):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#FFFFFF",
+                                        bg = "#000000",
                                         height = self.canvas_height,
                                         width = self.canvas_width,
                                         bd = 0,
@@ -412,207 +405,40 @@ class GUI:
         canvas.place(x=0,y=0)
 
 
-        # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("choose_identity_background.png"))
-        canvas.create_image(0,
-                            0,
-                            anchor = 'nw',
-                            image = background_image)
-
-
         # make the frame for contents
         frame = customtkinter.CTkFrame(
-            master = self.window,
-            width=417,
-            height=431,
+            master = canvas,
+            width=1200,
+            height=800,
             bg_color="#000000",
             fg_color="#000000",
             )
-        frame.place(relx=0.5,y=410,anchor="n")
- 
-
-        # create question_setter button
-        question_setter_button = bold_button(frame, self.color_secondary, "Question setter", self.color_on_secondary)
-        question_setter_button.config(command = lambda: print(room_name_entry.get()))
+        frame.place(x=300,y=100,anchor="n")
 
 
-        # create respondent button
-        respondent_button = bold_button(frame, self.color_primary,"Respondent", self.color_on_primary)
-        respondent_button.config(command = lambda: print(name_entry.get()))
-
-          
-        self.window.mainloop()
-
-
-    def confirm_respondent_page(self):
-        # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#FFFFFF",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
-
-
-        # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("confirm_respondent_background.png"))
-        canvas.create_image(0,
-                            0,
-                            anchor = 'nw',
-                            image = background_image)
-
-
-        # make the frame for contents
-        frame = customtkinter.CTkFrame(
-            master = self.window,
-            width=417,
-            height=431,
-            bg_color="#000000",
-            fg_color="#000000",
+        # create "GAME RULES"
+        reminder = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "GAME RULES",
+            text_font= ("Montserrat Alternates SemiBold", 80 * -1),
             )
-        frame.place(relx=0.5,y=550,anchor="n")
- 
-
-         # create continue button
-        continue_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
-        continue_button.config(command = lambda: print(room_name_entry.get()))
-
-          
-        self.window.mainloop()
+        reminder.place(relx=0.5,rely=0.2)
 
 
-    def confirm_question_setter_page(self):
-        # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#FFFFFF",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
-
-
-        # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("confirm_question_setter_background.png"))
-        canvas.create_image(0,
-                            0,
-                            anchor = 'nw',
-                            image = background_image)
-
-
-        # make the frame for contents
-        frame = customtkinter.CTkFrame(
-            master = self.window,
-            width=417,
-            height=431,
-            bg_color="#000000",
-            fg_color="#000000",
+        #create reminder
+        reminder = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "Choose the word\nthat matchesthe question.\nDo not be confused by the button color.\n\nFive rounds in total\nThe quickest wins",
+            text_font= ("Geo", 38 * -1),
             )
-        frame.place(relx=0.5,y=550,anchor="n")
- 
+        reminder.place(relx=0.5,rely=0.35)
 
-         # create continue button
-        continue_button = bold_button(frame, self.color_secondary, "CONTINUE", self.color_on_secondary)
-        continue_button.config(command = lambda: print(room_name_entry.get()))
-
-          
         self.window.mainloop()
+
     
-
-    def game_rules_page(self):
-        # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#FFFFFF",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
-
-
-        # create the background image
-        background_image = tkinter.PhotoImage(file = relative_to_assets("GameRules_page_background.png"))
-        canvas.create_image(0,
-                            0,
-                            anchor = 'nw',
-                            image = background_image)
-
-
-        # make the frame for contents
-        frame = customtkinter.CTkFrame(
-            master = self.window,
-            width=417,
-            height=431,
-            bg_color="#5293CF",
-            fg_color="#5293CF",
-            )
-        frame.place(relx=0.83,y=650,anchor="n")
- 
-
-        # create next button
-        next_button = bold_button(frame, self.color_secondary, "NEXT", self.color_on_secondary)
-        next_button.config(command = lambda: print(room_name_entry.get()))
-        next_button.config(bg_color = "#5293CF")
-        next_button.pack(padx=0,pady=0)
-
-
-        self.window.mainloop()
-
-
-    # def wait_question_page(self):
-    #     # create the CTKcanvas
-    #     canvas = customtkinter.CTkCanvas(self.window,
-    #                                     bg = "#000000",
-    #                                     height = self.canvas_height,
-    #                                     width = self.canvas_width,
-    #                                     bd = 0,
-    #                                     highlightthickness = 0,
-    #                                     relief = "ridge")
-    #     canvas.place(x=0,y=0)
-
-
-    #     # make the frame for contents
-    #     frame = customtkinter.CTkFrame(
-    #         master = canvas,
-    #         width=1200,
-    #         height=800,
-    #         bg_color="#000000",
-    #         fg_color="#000000",
-    #         )
-    #     frame.place(x=300,y=100,anchor="n")
-
-
-    #     # create "LOADING..."
-    #     reminder = customtkinter.CTkLabel(
-    #         master = frame,
-    #         text_color = self.color_primary,
-    #         text = "LOADING...",
-    #         text_font= ("Montserrat Alternates SemiBold", 96 * -1),
-    #         )
-    #     reminder.place(relx=0.5,rely=0.2)
-
-
-    #     #create "Wait until all the questions have been settled."
-    #     reminder = customtkinter.CTkLabel(
-    #         master = frame,
-    #         text_color = self.color_primary,
-    #         text = "Wait until all the questions\nhave been settled.\nThe game will begin at any time.",
-    #         text_font= ("Geo", 40 * -1),
-    #         )
-    #     reminder.place(relx=0.55,rely=0.35)
-
-    #     self.window.mainloop()
-
-    # create 5 playing pages
-    def loop(i):
-        for i in range(1,6):
-            play_game_page()
-            i+=1
-    def play_game_page(self,i):
+    def play_game_page(self, question_num):
         # make the frame for contents
         frame = customtkinter.CTkFrame(
             master = self.window,
@@ -628,7 +454,7 @@ class GUI:
         title = customtkinter.CTkLabel(
             master = frame,
             text_color = "#5293CF",
-            text = "Question("+str(i)+"/5)",
+            text = "Question("+str(question_num)+"/5)",
             text_font= ("Montserrat Alternates SemiBold", 40 * -1)
             )
         title.place(relx=0.05,rely=0.05)
@@ -646,9 +472,9 @@ class GUI:
         # set the question
         question = question_label(
             master = frame_question, 
-            text = "yeahyeahyeahyeahyeahyeahyeah"
+            text = "green"
             )
-        frame_question.place(relx=0.5,rely=0.25)
+        question.place(relx=0.5,rely=0.25)
         
 
         frame_answers = customtkinter.CTkFrame(
@@ -672,40 +498,108 @@ class GUI:
 
         answer1 = thick_button(
             master = frame_answers,
-            button_color = "#456765",
-            text = "234567",
-            text_color = "#456788",
+            button_color = "#EDDA96",
+            text = "green",
+            text_color = "#FFFFFF",
             )
         answer1.pack(padx=10,pady=10)
 
 
         answer2 = thick_button(
             master = frame_answers,
-            button_color = "#456765",
-            text = "234567",
-            text_color = "#456788",
+            button_color = "#98ED96",
+            text = "green",
+            text_color = "#FFFFFF",
             )
         answer2.pack(padx=10,pady=10)
 
         answer3 = thick_button(
             master = frame_answers,
-            button_color = "#456765",
-            text = "234567",
-            text_color = "#456788",
+            button_color = "#9896ED",
+            text = "green",
+            text_color = "#FFFFFF",
             )
         answer3.pack(padx=10,pady=10)
 
         answer4 = thick_button(
             master = frame_answers,
-            button_color = "#456765",
-            text = "234567",
-            text_color = "#456788",
+            button_color = "#ED96B5",
+            text = "green",
+            text_color = "#FFFFFF",
             )
         answer4.pack(padx=10,pady=10)
 
 
         self.window.mainloop()
 
+    def billboard_page(self,round_num):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#000000",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+
+        # make the frame for contents
+        frame = customtkinter.CTkFrame(
+            master = canvas,
+            width=1200,
+            height=800,
+            bg_color="#000000",
+            fg_color="#000000",
+            )
+        frame.place(x=400,y=100,anchor="n")
+
+        # create "Billboard"
+        billboard_title = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "Billboard",
+            text_font= ("Montserrat Alternates SemiBold", 96 * -1),
+            )
+        billboard_title.place(relx=0.45,rely=0.1)
+
+        #create "round number"
+        round_number = customtkinter.CTkLabel(
+            master = canvas,
+            text_color = "#FFFFFF",
+            text = "Round"+str(round_num),
+            text_font= ("Montserrat Alternates SemiBold", 36 * -1),
+            )
+        round_number.place(relx=0.75,rely=0.1)
+
+        #create details
+        details = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "current TOP1:\nSCORE:\nYour current score:\ncurrent rank:",
+            text_font= ("Geo", 64 * -1),
+            )
+        details.place(relx=0.45,rely=0.25)
+
+        self.window.mainloop()
+
+
+    def player_ranking_page(self):
+        # create the CTKcanvas
+        canvas = customtkinter.CTkCanvas(self.window,
+                                        bg = "#FFFFFF",
+                                        height = self.canvas_height,
+                                        width = self.canvas_width,
+                                        bd = 0,
+                                        highlightthickness = 0,
+                                        relief = "ridge")
+        canvas.place(x=0,y=0)
+        # create the background image
+        background_image = tkinter.PhotoImage(file = relative_to_assets("player_ranking_page_background.png"))
+        canvas.create_image(0,
+                            0,
+                            anchor = 'nw',
+                            image = background_image)
+        self.window.mainloop()    
 
 
     # copy that in chat GUI here, change later
@@ -726,14 +620,16 @@ class GUI:
             #     self.textCons.insert(END, self.system_msg + "\n\n")
             #     self.textCons.config(state=DISABLED)
             #     self.textCons.see(END)
+    def play(self):
+        for i in range(1,6):
+            play_game_page(self,i)
+            billboard_page(self,i)
+            i+=1
+        self.window.mainloop()    
+
 
     def run(self):
-        self.start_page()    
-        # self.join_page()
-        # self.create_page()
-        # self.choose_identity_page()
-        # self.confirm_respondent_page()
-        # self.confirm_question_setter_page()
+        self.start_page()
 
 if __name__ == "__main__":
     g = GUI('','','','')
@@ -742,8 +638,8 @@ if __name__ == "__main__":
     # g.join_page()
     # g.pairing_page()
     # g.choose_identity_page()
-    # g.confirm_respondent_page()
-    # g.confirm_question_setter_page()
-    # g.game_rules_page()
-    # g.wait_question_page()
-    g.play_game_page()
+    # g.game_rule_page()
+    # g.play_game_page()
+    # g.billboard_page()
+    g.play()
+    # g.player_ranking_page()
