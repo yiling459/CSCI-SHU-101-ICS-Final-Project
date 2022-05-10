@@ -157,11 +157,11 @@ def thick_button(master, button_color, text, text_color):
 def question_label(master, text="question yeahyeahyeahyeahyeahyeah"):
     question = customtkinter.CTkLabel(
         master=master,
-        fg_color="#5293CF",
+        fg_color="#FFFFFF",
         corner_radius=0,
         text=text,     
         justify=tkinter.CENTER,
-        text_font=("Futura Medium", 36 * -1),
+        text_font=("Futura Medium", 64 * -1),
         text_color="#000000"
         )
     question.pack()

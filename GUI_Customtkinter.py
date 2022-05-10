@@ -474,7 +474,7 @@ class GUI:
             master = frame_question, 
             text = "green"
             )
-        frame_question.place(relx=0.5,rely=0.25)
+        frame_question.place(relx=0.5,rely=0.185)
         
 
         frame_answers = customtkinter.CTkFrame(
@@ -625,8 +625,7 @@ class GUI:
             self.play_game_page(i)
             self.billboard_page(i)
             i+=1
-        self.window.mainloop()    
-
+        
 
     def run(self):
         self.start_page()
