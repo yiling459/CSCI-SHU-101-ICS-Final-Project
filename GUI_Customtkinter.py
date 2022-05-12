@@ -754,7 +754,69 @@ class GUI:
                             0,
                             anchor = 'nw',
                             image = background_image)
-        self.window.mainloop()    
+        
+        ranking_first_image = tkinter.PhotoImage(file = relative_to_assets("ranking_first.png"))
+        ranking_second_image = tkinter.PhotoImage(file = relative_to_assets("ranking_second.png"))
+        ranking_third_image = tkinter.PhotoImage(file = relative_to_assets("ranking_third.png"))
+        first_x = 1200
+        first_stop_place = 230
+        first_step = -10
+
+        second_x = -290
+        second_stop_place = 0
+        second_step = 10
+
+        third_x = -290
+        third_stop_place = 0
+        third_step = 10
+
+        interval_time = 10
+        
+        ranking_first = customtkinter.CTkButton(
+            master=self.window,
+            image=ranking_first_image,
+            corner_radius=0,
+            border_width=0,
+            hover=False,
+            text=""
+            )
+        ranking_first.place(x=first_x,y=165,anchor="nw")
+        self.window.after(interval_time,lambda: self.ranking_animation(first_stop_place,first_x,165,first_step,ranking_first,interval_time))
+
+        ranking_second = customtkinter.CTkButton(
+            master=self.window,
+            image=ranking_second_image,
+            corner_radius=0,
+            border_width=0,
+            hover=False,
+            text=""
+            )
+        ranking_second.place(x=second_stop_place,y=484,anchor="nw")
+        ranking_second.place(x=second_x,y=484,anchor="nw")
+        self.window.after(interval_time,lambda: self.ranking_animation(second_stop_place,second_x,484,second_step,ranking_second,interval_time))
+
+        ranking_third = customtkinter.CTkButton(
+            master=self.window,
+            image=ranking_third_image,
+            corner_radius=0,
+            border_width=0,
+            hover=False,
+            text=""
+            )
+        ranking_third.place(x=third_x,y=633,anchor="nw")
+        self.window.after(interval_time,lambda: self.ranking_animation(third_stop_place,third_x,633,third_step,ranking_third,interval_time))
+        
+        self.window.mainloop()   
+
+    def ranking_animation(self,stop_place,x,y,step,ranking,interval_time):
+        if x == stop_place:
+            pass
+        else:
+            print("enter the loop")
+            # ranking_first_image = tkinter.PhotoImage(file = relative_to_assets("ranking_first.png"))
+            ranking.place(x=x,y=y,anchor="nw")
+            self.window.after(interval_time,lambda: self.ranking_animation(stop_place,x+step,y,step,ranking,interval_time))
+        
 
 
     # copy that in chat GUI here, change later
