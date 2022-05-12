@@ -775,11 +775,6 @@ class GUI:
             #     self.textCons.insert(END, self.system_msg + "\n\n")
             #     self.textCons.config(state=DISABLED)
             #     self.textCons.see(END)
-    def play(self):
-        for i in range(1,6):
-            self.play_game_page(i)
-            self.billboard_page(i)
-            i+=1
         
 
     def run(self):
