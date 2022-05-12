@@ -119,7 +119,7 @@ def thick_button(master, button_color, text, text_color):
         bg_color="#FFFFFF",
         fg_color=button_color,
         border_width=5,
-        border_color="red",
+        border_color="#FFFFFF",
         corner_radius=28,
         text=text,
         text_font= ("Futura Medium", 20 * -1),

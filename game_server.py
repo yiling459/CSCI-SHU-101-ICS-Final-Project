@@ -172,6 +172,7 @@ class Server:
 # ==============================================================================
             # kick off means the game really begin
             elif msg["action"] == "game start":
+                print("start game action received")
                 room_name = msg["from room"]
                 question, answers_name, answers_hex = generate_question_and_answers(self.color_dict)
                 for player in self.room.room_members(room_name):
@@ -179,10 +180,12 @@ class Server:
                     to_sock = self.logged_name2sock[player]
                     mysend(to_sock, msg)
                 time.sleep(5)
+                print("now sending the question")
                 for player in self.room.room_members(room_name):
                     msg = json.dumps({"action":"receive question","question":question,"answers_name":answers_name,"answers_hex":answers_hex})
                     to_sock = self.logged_name2sock[player]
                     mysend(to_sock, msg)
+                    print("question sent to "+player)
 
                 
                     

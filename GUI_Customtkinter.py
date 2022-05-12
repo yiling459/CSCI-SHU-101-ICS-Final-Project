@@ -380,7 +380,8 @@ class GUI:
 
 
     def get_response(self):
-        while self.update:
+        # while self.update:
+        while True:
             self.response = json.loads(self.recv())
 
     def update_member(self):
@@ -402,7 +403,9 @@ class GUI:
                 elif self.response["action"] == "game start":
                     self.game_rule_page()
                     self.update = False
-                    sys.exit()
+                    # sys.exit()
+                # elif self.response["action"] == "game start":
+                #     print("the message is received in the threading")
 
             self.member_frame.after(10,lambda:self.update_member())                   
 
@@ -459,34 +462,45 @@ class GUI:
             text = "Game will start in "+str(count_down),
             text_font= ("Geo", 38 * -1),
             )
-        reminder.place(relx=0.5,rely=0.5)
+        reminder.place(relx=0.5,rely=0.7)
 
-        frame.after(1000,lambda: self.count_down_game_rule(frame,count_down-1))
+        frame.after(1000,lambda: self.count_down_game_rule(frame,reminder,count_down-1))
 
         self.window.mainloop()
     
-    def count_down_game_rule(self,frame,count_down):
+    def count_down_game_rule(self,frame,reminder,count_down):
         if count_down == 0:
-            self.response = json.load(self.recv())
+            print("now receiving the message")
+            # self.response = json.loads(self.recv())
+            print(self.response)
             question =self.response["question"]
             answers_name=self.response["answers_name"]
             answers_hex=self.response["answers_hex"]
             color_name_lst=[question]
             color_hex_lst=answers_hex
-            idx = 0
-            for k in answers_name.key():
-                color_name_lst.append(k)
-                if k == question:
+            # idx = 0
+            # for k in answers_name:
+            #     color_name_lst.append(k[0])
+            #     if k[1] == True:
+            #         right_idx = idx
+            #     idx += 1
+            for idx in range(len(answers_name)):
+                color_name_lst.append(answers_name[idx][0])
+                if answers_name[idx][1] == True:
                     right_idx = idx
-                idx += 1
+                
 
-            self.play_game_page(color_name_lst,color_hex_lst,right_idx)
+            print("question loaded successfully")
+            self.play_game_page(color_name_lst,0,color_hex_lst,right_idx)
         else:
-            frame.after(1000,lambda: self.count_down_game_rule(frame,count_down-1))
+            reminder.config(text = "Game will start in "+str(count_down))
+            reminder.place(relx=0.5,rely=0.7)
+            print("counting down")
+            frame.after(1000,lambda: self.count_down_game_rule(frame,reminder,count_down-1))
             
 
     
-    def play_game_page(self, question_color=["question","color1","color2","color3","color4"],question_num=0,button_color=["#000000","#000000","#000000","#000000"],right_idx=1):
+    def play_game_page(self, color_name=["question","color1","color2","color3","color4"],question_num=0,button_color=["#000000","#000000","#000000","#000000"],right_idx=1):
         # make the frame for contents
         frame = customtkinter.CTkFrame(
             master = self.window,
@@ -520,7 +534,7 @@ class GUI:
         # set the question
         question = question_label(
             master = frame_question, 
-            text = question_color[0]
+            text = color_name[0]
             )
         frame_question.place(relx=0.5,rely=0.185)
         
@@ -547,7 +561,7 @@ class GUI:
         answer1 = thick_button(
             master = frame_answers,
             button_color = button_color[0],
-            text = question_color[1],
+            text = color_name[1],
             text_color = "#FFFFFF"
             )
         answer1.config(command = lambda: self.change_button_color(answer1,True))
@@ -559,7 +573,7 @@ class GUI:
         answer2 = thick_button(
             master = frame_answers,
             button_color = button_color[1],
-            text = question_color[2],
+            text = color_name[2],
             text_color = "#FFFFFF",
             )
         # answer2.pack(padx=10,pady=10)
@@ -567,7 +581,7 @@ class GUI:
         answer3 = thick_button(
             master = frame_answers,
             button_color = button_color[2],
-            text = question_color[3],
+            text =color_name[3],
             text_color = "#FFFFFF",
             )
         # answer3.pack(padx=10,pady=10)
@@ -575,10 +589,17 @@ class GUI:
         answer4 = thick_button(
             master = frame_answers,
             button_color = button_color[3],
-            text = question_color[4],
+            text = color_name[4],
             text_color = "#FFFFFF",
             )
         # answer4.pack(padx=10,pady=10)
+
+        answers_button_lst = [answer1,answer2,answer3,answer4]
+        for i in range(len(answers_button_lst)):
+            if i == right_idx:
+                answers_button_lst[i].config(command = lambda: self.change_button_color(answers_button_lst[i],True))
+            else:
+                answers_button_lst[i].config(command = lambda: self.change_button_color(answers_button_lst[i],False))
 
 
         self.window.mainloop()
