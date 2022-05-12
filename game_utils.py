@@ -74,7 +74,8 @@ def label_time(msg, label):
     msg[label] = current_time
 
 def generate_question_and_answers(color_dict:dict):
-    choices = [random.choice(list(color_dict)) for i in range(4)]
+    # choices = [random.choice(list(color_dict)) for i in range(4)]
+    choices = random.sample(list(color_dict),4)
     # question is also the right color
     question = choices[0]
     answers_name = [[question,True]]

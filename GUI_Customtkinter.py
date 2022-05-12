@@ -534,7 +534,7 @@ class GUI:
         # set the question
         question = question_label(
             master = frame_question, 
-            text = color_name[0]
+            text = color_name[0].upper()
             )
         frame_question.place(relx=0.5,rely=0.185)
         
