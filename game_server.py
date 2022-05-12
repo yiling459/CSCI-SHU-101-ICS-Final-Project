@@ -208,14 +208,20 @@ class Server:
                 from_name = self.logged_sock2name[from_sock]
                 room_name = msg["from room"]
                 print("answer msg received from "+from_name)
-                position = self.total_answers_recv % len(self.room.room_members(room_name))
+                # the number of players making the right choice
+                right_choice_made = 0
+                # position = self.total_answers_recv % len(self.room.room_members(room_name))
                 # make sure this is the first player to answer
-                if position == 1 and msg["status"] == "right":
-                    # add one score to the player
-                    self.room.right_answer(from_name)
-                    # make this guy the winner
-                    self.winner = [from_name]
-                    print("we get a winner")
+                if msg["status"] == "right":
+                    right_choice_made += 1
+                    if right_choice_made == 1:
+                        # add one score to the player
+                        self.room.right_answer(from_name)
+                        # make this guy the winner
+                        self.winner = [from_name]
+                        print("we get a winner")
+                    else:
+                        self.loser_lst.append(from_name)
                 else:
                     self.loser_lst.append(from_name)
                 
@@ -236,7 +242,7 @@ class Server:
                     # send the msg to the winner, if there's any
                     if len(self.winner) == 1: 
                         winner_msg = json.dumps(
-                            {"action": "round end", "status": "win", "total score":self.room.members[self.winner[0]]})
+                            {"action": "round end", "status": "win", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[self.winner[0]]})
                         winner_sock = self.logged_name2sock[self.winner[0]]
                         mysend(winner_sock,winner_msg)
                         print("msg has sent to winner "+self.winner[0])
@@ -247,7 +253,7 @@ class Server:
                     for player in self.loser_lst:
                         to_sock = self.logged_name2sock[player]
                         msg = json.dumps(
-                        {"action": "round end", "status": "lose", "total score":self.room.members[player]})
+                            {"action": "round end", "status": "lose", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[player]})
                         mysend(to_sock,msg)
                         print("msg has sent to "+player)
                     self.loser_lst = []

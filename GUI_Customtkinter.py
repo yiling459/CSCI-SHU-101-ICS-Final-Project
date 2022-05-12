@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 from turtle import bgcolor, right
 from xml.etree.ElementTree import TreeBuilder
 
@@ -54,6 +55,8 @@ class GUI:
 
         # init the member_lst of the room
         self.members_lst = []
+
+        self.round_num = 1
 
     def start_page(self,notification="Enter Your Name"):
         # create the CTKcanvas
@@ -380,8 +383,8 @@ class GUI:
 
 
     def get_response(self):
-        while self.update:
-        # while True:
+        # while self.update:
+        while True:
             self.response = json.loads(self.recv())
             print(self.response)
 
@@ -425,26 +428,26 @@ class GUI:
 
     def game_rule_page(self):
         
-        # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#000000",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
+        # # create the CTKcanvas
+        # canvas = customtkinter.CTkCanvas(self.window,
+        #                                 bg = "#000000",
+        #                                 height = self.canvas_height,
+        #                                 width = self.canvas_width,
+        #                                 bd = 0,
+        #                                 highlightthickness = 0,
+        #                                 relief = "ridge")
+        # canvas.place(x=0,y=0)
 
 
-        # make the frame for contents
+        # # make the frame for contents
         frame = customtkinter.CTkFrame(
-            master = canvas,
+            master = self.window,
             width=1200,
             height=800,
             bg_color="#000000",
             fg_color="#000000",
             )
-        frame.place(x=300,y=100,anchor="n")
+        frame.place(x=0,y=0)
 
 
         # create "GAME RULES"
@@ -454,7 +457,7 @@ class GUI:
             text = "GAME RULES",
             text_font= ("Montserrat Alternates SemiBold", 80 * -1),
             )
-        reminder.place(relx=0.5,rely=0.2)
+        reminder.place(relx=0.5,rely=0.25,anchor="n")
 
 
         #create reminder
@@ -464,7 +467,7 @@ class GUI:
             text = "Choose the word\nthat matchesthe question.\nDo not be confused by the button color.\n\nFive rounds in total\nThe quickest wins",
             text_font= ("Geo", 38 * -1),
             )
-        reminder.place(relx=0.5,rely=0.35)
+        reminder.place(relx=0.5,rely=0.4,anchor="n")
 
         # init the count down timer here
         count_down = 5
@@ -472,10 +475,11 @@ class GUI:
         reminder = customtkinter.CTkLabel(
             master = frame,
             text_color = self.color_primary,
+            text_font= ("Montserrat Alternates SemiBold", 25),
             text = "Game will start in "+str(count_down),
-            text_font= ("Geo", 38 * -1),
+            justify = "right"
             )
-        reminder.place(relx=0.5,rely=0.7)
+        reminder.place(x=900,y=60,anchor="nw")
 
         frame.after(1000,lambda: self.count_down_game_rule(frame,reminder,count_down-1))
 
@@ -503,10 +507,10 @@ class GUI:
                     right_idx = idx
                 
             print("question loaded successfully")
-            self.play_game_page(color_name_lst,0,color_hex_lst,right_idx)
+            self.play_game_page(color_name_lst,self.round_num,color_hex_lst,right_idx)
         else:
             reminder.config(text = "Game will start in "+str(count_down))
-            reminder.place(relx=0.5,rely=0.7)
+            reminder.place(x=860,y=60,anchor="nw")
             print("counting down")
             frame.after(1000,lambda: self.count_down_game_rule(frame,reminder,count_down-1))
             
@@ -621,77 +625,117 @@ class GUI:
         self.window.mainloop()
 
     def change_button_color(self,answer_button,label):
-        if label == True:
-            answer_button.config(border_color="green")
-            msg = json.dumps({"action":"choice made","status":"right","from room":self.room_name})
-            self.send(msg)
-            print("correct response sent")
-        elif label == False:
-            answer_button.config(border_color="red")
-            msg = json.dumps({"action":"choice made","status":"wrong","from room":self.room_name})
-            self.send(msg)
-            print("false response sent")
-        
-        print("receiving the msg to end this round")
-        self.response = json.loads(self.recv())
-        if len(self.response) > 0:
-            print(self.response)
+        if label == "get response":
             if self.response["action"] == "round end":
-                self.billboard_page()
+                top_player = " & ".join(self.response["top players"])
+                top_score = self.response["top score"]
+                player_score = self.response["player score"]
+
+                self.billboard_page(top_player,top_score,player_score)
+            else:
+                answer_button.after(10,lambda: self.change_button_color(answer_button,label))
+
+        else:
+            if label == True:
+                answer_button.config(border_color="green")
+                msg = json.dumps({"action":"choice made","status":"right","from room":self.room_name})
+                self.send(msg)
+                print("correct response sent")
+                label = "get response"
+            elif label == False:
+                answer_button.config(border_color="red")
+                msg = json.dumps({"action":"choice made","status":"wrong","from room":self.room_name})
+                self.send(msg)
+                print("false response sent")
+                label = "get response"
+
+            print("enter the recursive loop")
+            answer_button.after(10,lambda: self.change_button_color(answer_button,label))
+        
+        # print("receiving the msg to end this round")
+        # self.response = json.loads(self.recv())
+        # if len(self.response) > 0:
+        #     print(self.response)
+        #     if self.response["action"] == "round end":
+        #         self.billboard_page()
+
         
 
-
-        
-
-    def billboard_page(self,round_num=0):
+    def billboard_page(self,top_player="empty",top_score=0,your_current_score=0,round_num=0):
         # create the CTKcanvas
-        canvas = customtkinter.CTkCanvas(self.window,
-                                        bg = "#000000",
-                                        height = self.canvas_height,
-                                        width = self.canvas_width,
-                                        bd = 0,
-                                        highlightthickness = 0,
-                                        relief = "ridge")
-        canvas.place(x=0,y=0)
+        # round_num = self.round_num
+        # canvas = customtkinter.CTkCanvas(self.window,
+        #                                 bg = "#000000",
+        #                                 height = self.canvas_height,
+        #                                 width = self.canvas_width,
+        #                                 bd = 0,
+        #                                 highlightthickness = 0,
+        #                                 relief = "ridge")
+        # canvas.place(x=0,y=0)
 
         # make the frame for contents
         frame = customtkinter.CTkFrame(
-            master = canvas,
+            master = self.window,
             width=1200,
             height=800,
             bg_color="#000000",
             fg_color="#000000",
             )
-        frame.place(x=400,y=100,anchor="n")
+        frame.place(x=0,y=0)
 
         # create "Billboard"
         billboard_title = customtkinter.CTkLabel(
             master = frame,
             text_color = self.color_primary,
             text = "Billboard",
-            text_font= ("Montserrat Alternates SemiBold", 96 * -1),
+            text_font= ("Montserrat Alternates SemiBold", 80 * -1),
             )
-        billboard_title.place(relx=0.45,rely=0.1)
-
-        #create "round number"
-        round_number = customtkinter.CTkLabel(
-            master = canvas,
-            text_color = "#FFFFFF",
-            text = "Round"+str(round_num),
-            text_font= ("Montserrat Alternates SemiBold", 36 * -1),
-            )
-        round_number.place(relx=0.75,rely=0.1)
+        billboard_title.place(relx=0.5,rely=0.25,anchor="n")
 
         #create details
         details = customtkinter.CTkLabel(
             master = frame,
             text_color = self.color_primary,
-            text = "current TOP1:\nSCORE:\nYour current score:\ncurrent rank:",
-            text_font= ("Geo", 64 * -1),
+            text = "current TOP1: "+top_player+"\nSCORE: "+str(top_score)+"\nYour current score: "+str(your_current_score),
+            text_font= ("Geo", 38 * -1),
+            justify = "center"
             )
-        details.place(relx=0.45,rely=0.25)
+        details.place(relx=0.5,rely=0.4,anchor="n")
+
+        #create "round number"
+        round_number = customtkinter.CTkLabel(
+            master = frame,
+            text_color = "#FFFFFF",
+            text = "Round "+str(round_num),
+            text_font= ("Montserrat Alternates SemiBold", 25),
+            )
+        round_number.place(x=1000,y=60,anchor="nw")
+
+        #create the countdown timer
+        count_down = 5
+        timer = customtkinter.CTkLabel(
+            master = frame,
+            text_color = self.color_primary,
+            text = "next round will start in "+str(count_down),
+            text_font= ("Montserrat Alternates SemiBold", 25),
+            justify = "right"
+            )
+        timer.place(relx=0.5,rely=0.8,anchor="n")
 
         self.window.mainloop()
+
+    def round_control(self,count_down):
+        if count_down == 0:
+            if self.round_num < 5:
+                last_response = self.response
+                msg = json.dumps({"action":"game start", "from room":self.room_name})
+                self.send(msg)
+                if self.response != last_response:
+                    pass
+
+
+
+
 
 
     def player_ranking_page(self):
@@ -749,7 +793,7 @@ if __name__ == "__main__":
     # g.pairing_page()
     # g.choose_identity_page()
     # g.game_rule_page()
-    g.play_game_page()
+    # g.play_game_page()
     # g.billboard_page()
     # g.play()
-    # g.player_ranking_page()
+    g.player_ranking_page()
