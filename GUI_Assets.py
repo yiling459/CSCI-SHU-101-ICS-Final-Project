@@ -125,7 +125,8 @@ def thick_button(master, button_color, text, text_color):
         text_font= ("Futura Medium", 20 * -1),
         text_color=text_color,
         width=213,
-        height=360
+        height=360,
+        hover=False
         )
     button.pack(padx=10,pady=10,side = tkinter.LEFT)
     return button

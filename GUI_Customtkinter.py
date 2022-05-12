@@ -1,5 +1,5 @@
 from pathlib import Path
-from turtle import bgcolor
+from turtle import bgcolor, right
 from xml.etree.ElementTree import TreeBuilder
 
 from click import command
@@ -343,7 +343,7 @@ class GUI:
         join_button = bold_button(
             master=background_right,
             button_color=self.color_primary,
-            text="Join Game",
+            text="Start Game",
             text_color=self.color_on_primary
             )
         join_button.config(bg_color = "#FFFFFF")
@@ -380,9 +380,10 @@ class GUI:
 
 
     def get_response(self):
-        # while self.update:
-        while True:
+        while self.update:
+        # while True:
             self.response = json.loads(self.recv())
+            print(self.response)
 
     def update_member(self):
         if self.update == True:
@@ -401,8 +402,20 @@ class GUI:
                             fg_color=self.color_secondary
                             ).pack(side=tkinter.LEFT,padx=10)
                 elif self.response["action"] == "game start":
-                    self.game_rule_page()
-                    self.update = False
+                    if self.response["status"] == "success":
+                        self.update = False
+                        self.game_rule_page()
+                        
+                    elif self.response["status"] == "denied":
+                        caution = customtkinter.CTkLabel(
+                            master=self.window,
+                            bg_color="#FFFFFF",
+                            fg_color="#FFFFFF",
+                            text="*Caution: There should be at least two people in a room to start a game",
+                            text_color="red",
+                            text_font = ("Montserrat Alternates SemiBold", 12 * -1)
+                            )
+                        caution.place(x=495,y=720)
                     # sys.exit()
                 # elif self.response["action"] == "game start":
                 #     print("the message is received in the threading")
@@ -489,7 +502,6 @@ class GUI:
                 if answers_name[idx][1] == True:
                     right_idx = idx
                 
-
             print("question loaded successfully")
             self.play_game_page(color_name_lst,0,color_hex_lst,right_idx)
         else:
@@ -564,18 +576,17 @@ class GUI:
             text = color_name[1],
             text_color = "#FFFFFF"
             )
-        answer1.config(command = lambda: self.change_button_color(answer1,True))
+        answer1.config(command = lambda: self.change_button_color(answer1,False))
         # answer1.config(border_color = "blue")
         # answer1.pack(padx=10,pady=10)
-        
-
-
+    
         answer2 = thick_button(
             master = frame_answers,
             button_color = button_color[1],
             text = color_name[2],
             text_color = "#FFFFFF",
             )
+        answer2.config(command = lambda: self.change_button_color(answer2,False))
         # answer2.pack(padx=10,pady=10)
 
         answer3 = thick_button(
@@ -584,6 +595,7 @@ class GUI:
             text =color_name[3],
             text_color = "#FFFFFF",
             )
+        answer3.config(command = lambda: self.change_button_color(answer3,False))
         # answer3.pack(padx=10,pady=10)
 
         answer4 = thick_button(
@@ -592,25 +604,46 @@ class GUI:
             text = color_name[4],
             text_color = "#FFFFFF",
             )
+        answer4.config(command = lambda: self.change_button_color(answer4,False))
         # answer4.pack(padx=10,pady=10)
 
-        answers_button_lst = [answer1,answer2,answer3,answer4]
-        for i in range(len(answers_button_lst)):
-            if i == right_idx:
-                answers_button_lst[i].config(command = lambda: self.change_button_color(answers_button_lst[i],True))
-            else:
-                answers_button_lst[i].config(command = lambda: self.change_button_color(answers_button_lst[i],False))
-
+        # a very brutal way
+        if right_idx == 0:
+            answer1.config(command = lambda: self.change_button_color(answer1,True))
+        elif right_idx == 1:
+            answer2.config(command = lambda: self.change_button_color(answer2,True))
+        elif right_idx == 2:
+            answer3.config(command = lambda: self.change_button_color(answer3,True))
+        elif right_idx == 3:
+            answer4.config(command = lambda: self.change_button_color(answer4,True))
+        
 
         self.window.mainloop()
 
-    def change_button_color(self,button,label):
+    def change_button_color(self,answer_button,label):
         if label == True:
-            button.config(border_color="green")
+            answer_button.config(border_color="green")
+            msg = json.dumps({"action":"choice made","status":"right","from room":self.room_name})
+            self.send(msg)
+            print("correct response sent")
         elif label == False:
-            button.config(border_color="red")
+            answer_button.config(border_color="red")
+            msg = json.dumps({"action":"choice made","status":"wrong","from room":self.room_name})
+            self.send(msg)
+            print("false response sent")
+        
+        print("receiving the msg to end this round")
+        self.response = json.loads(self.recv())
+        if len(self.response) > 0:
+            print(self.response)
+            if self.response["action"] == "round end":
+                self.billboard_page()
+        
 
-    def billboard_page(self,round_num):
+
+        
+
+    def billboard_page(self,round_num=0):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#000000",
