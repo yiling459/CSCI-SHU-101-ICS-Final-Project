@@ -810,6 +810,7 @@ class GUI:
 
     def ranking_animation(self,stop_place,x,y,step,ranking,interval_time):
         if x == stop_place:
+            
             pass
         else:
             print("enter the loop")
