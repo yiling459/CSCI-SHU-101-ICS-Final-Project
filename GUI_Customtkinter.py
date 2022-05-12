@@ -791,7 +791,6 @@ class GUI:
             hover=False,
             text=""
             )
-        ranking_second.place(x=second_stop_place,y=484,anchor="nw")
         ranking_second.place(x=second_x,y=484,anchor="nw")
         self.window.after(interval_time,lambda: self.ranking_animation(second_stop_place,second_x,484,second_step,ranking_second,interval_time))
 
@@ -810,7 +809,7 @@ class GUI:
 
     def ranking_animation(self,stop_place,x,y,step,ranking,interval_time):
         if x == stop_place:
-            
+
             pass
         else:
             print("enter the loop")
