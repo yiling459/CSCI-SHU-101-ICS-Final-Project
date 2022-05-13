@@ -868,6 +868,33 @@ class GUI:
         ranking_third.place(x=third_x,y=633,anchor="nw")
         self.window.after(interval_time,lambda: self.ranking_animation(third_stop_place,third_x,633,third_step,ranking_third,interval_time))
         
+        # create 1st player label
+        round_number = customtkinter.CTkLabel(
+            master = self.window,
+            text_color = "#FFFFFF",
+            text = "Benz",
+            text_font= ("Montserrat Alternates SemiBold", 120),
+            )
+        round_number.place(x=500,y=190,anchor="nw") 
+        
+        # create 2nd player label
+        round_number = customtkinter.CTkLabel(
+            master = self.window,
+            text_color = "#FFFFFF",
+            text = "Benz",
+            text_font= ("Montserrat Alternates SemiBold", 96),
+            )
+        round_number.place(x=530,y=450,anchor="nw") 
+        
+        # create 3rd player label
+        round_number = customtkinter.CTkLabel(
+            master = self.window,
+            text_color = "#FFFFFF",
+            text = "Benz",
+            text_font= ("Montserrat Alternates SemiBold", 96),
+            )
+        round_number.place(x=530,y=600,anchor="nw") 
+        
         self.window.mainloop()   
 
     def ranking_animation(self,stop_place,x,y,step,ranking,interval_time):
