@@ -57,6 +57,7 @@ class GUI:
         self.members_lst = []
 
         self.round_num = 1
+        self.recv_from_threading = True
 
     def start_page(self,notification="Enter Your Name"):
         # create the CTKcanvas
@@ -383,10 +384,9 @@ class GUI:
 
 
     def get_response(self):
-        # while self.update:
         while True:
             self.response = json.loads(self.recv())
-            print(self.response)
+            # print(self.response)
 
     def update_member(self):
         if self.update == True:
@@ -517,6 +517,7 @@ class GUI:
 
     
     def play_game_page(self, color_name=["question","color1","color2","color3","color4"],question_num=0,button_color=["#000000","#000000","#000000","#000000"],right_idx=1):
+        question_num = self.round_num
         # make the frame for contents
         frame = customtkinter.CTkFrame(
             master = self.window,
@@ -626,12 +627,39 @@ class GUI:
 
     def change_button_color(self,answer_button,label):
         if label == "get response":
+            
+            # stop the threading from receiving the server msg
+            # self.recv_from_threading = False
+            # self.response = json.loads(self.recv())
+            print("now the label is get response")
+            # current_response = self.response
+            # print(self.response)
             if self.response["action"] == "round end":
                 top_player = " & ".join(self.response["top players"])
                 top_score = self.response["top score"]
                 player_score = self.response["player score"]
+                print("you are not the last one to make choice")
+                if self.round_num == 5:
+                    self.player_ranking_page()
+                else:
+                    self.new_round_starter(top_player,top_score,player_score)
+                # self.new_round_starter(top_player,top_score,player_score)
+            elif self.response["action"] == "able to start next round":
+                print("let me know the response here")
+                print(self.response)
+                top_player = " & ".join(self.response["top players"])
+                top_score = self.response["top score"]
+                player_score = self.response["player score"]
+                if self.round_num < 5:
+                    
+                    self.send_game_start_msg()
+                    print("now enter the billboard")
+                    print("you are the last one")
+                    self.new_round_starter(top_player,top_score,player_score)
 
-                self.billboard_page(top_player,top_score,player_score)
+                elif self.round_num == 5:
+                    self.player_ranking_page()
+
             else:
                 answer_button.after(10,lambda: self.change_button_color(answer_button,label))
 
@@ -659,11 +687,23 @@ class GUI:
         #     if self.response["action"] == "round end":
         #         self.billboard_page()
 
+    def new_round_starter(self,top_player,top_score,your_current_score):
+        # self.round_num += 1
+        self.update = True
+        while self.update:
+            if self.response["action"] == "game start":
+                if self.response["status"] == "success":
+                        self.update = False
+                        self.billboard_page(top_player,top_score,your_current_score)
+        
+
+
+
         
 
     def billboard_page(self,top_player="empty",top_score=0,your_current_score=0,round_num=0):
         # create the CTKcanvas
-        # round_num = self.round_num
+        round_num = self.round_num
         # canvas = customtkinter.CTkCanvas(self.window,
         #                                 bg = "#000000",
         #                                 height = self.canvas_height,
@@ -721,17 +761,40 @@ class GUI:
             justify = "right"
             )
         timer.place(relx=0.5,rely=0.8,anchor="n")
-
+        frame.after(1000,lambda: self.count_down_billboard(frame,timer,count_down))
+        
         self.window.mainloop()
 
-    def round_control(self,count_down):
+    def count_down_billboard(self,frame,timer,count_down):
         if count_down == 0:
-            if self.round_num < 5:
-                last_response = self.response
-                msg = json.dumps({"action":"game start", "from room":self.room_name})
-                self.send(msg)
-                if self.response != last_response:
-                    pass
+            # self.response = json.loads(self.recv())
+            self.round_num += 1
+            print("response received in billboard")
+            print(self.response)
+            question =self.response["question"]
+            answers_name=self.response["answers_name"]
+            answers_hex=self.response["answers_hex"]
+            color_name_lst=[question]
+            color_hex_lst=answers_hex
+
+            for idx in range(len(answers_name)):
+                color_name_lst.append(answers_name[idx][0])
+                if answers_name[idx][1] == True:
+                    right_idx = idx
+            
+            print("question loaded successfully")
+            # self.recv_from_threading = True
+            self.play_game_page(color_name_lst,self.round_num,color_hex_lst,right_idx)
+
+        
+        else:
+            timer.config(text = "next round will start in "+str(count_down))
+            print("counting down")
+            frame.after(1000,lambda: self.count_down_billboard(frame,timer,count_down-1))
+            
+            
+
+                
 
 
 
@@ -851,6 +914,6 @@ if __name__ == "__main__":
     # g.choose_identity_page()
     # g.game_rule_page()
     # g.play_game_page()
-    # g.billboard_page()
+    g.billboard_page()
     # g.play()
-    g.player_ranking_page()
+    # g.player_ranking_page()
