@@ -237,7 +237,7 @@ class Server:
                     # get the top three players for the last page
                     sorted_player_lst = []
                     sorted_values = sorted(self.room.members.values())
-                    sorted_values.reverse
+                    sorted_values.reverse()
                     for i in sorted_values:
                         for k in self.room.members.keys():
                             if self.room.members[k] == i:
