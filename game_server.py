@@ -23,12 +23,6 @@ class Server:
         self.server.bind(SERVER)
         self.server.listen(5)
         self.all_sockets.append(self.server)
-        # # initialize past chat indices
-        # self.indices = {}
-        # # sonnet
-        # self.sonnet_f = open('AllSonnets.txt.idx', 'rb')
-        # self.sonnet = pkl.load(self.sonnet_f)
-        # self.sonnet_f.close()
 
         # set the color dictionary
         self.color_dict = {"red":"#C03221","orange":"#ED7D3A","yellow":"#F0D719","green":"#4A8259","cyan":"#4AC3D3","blue":"#2F4E89","purple":"#521C5E"}
@@ -57,15 +51,12 @@ class Server:
                         # add into the name to sock mapping
                         self.logged_name2sock[name] = sock
                         self.logged_sock2name[sock] = name
-                        # load chat history? Write that later
                         print(name + ' logged in')
                         self.room.enter_game(name)
-                        # maybe change the send later
                         mysend(sock, json.dumps(
                             {"action": "login", "status": "ok"}))
 
                     else: # a player under this name has already logged in
-                        # duplicate? I may change it to "retry" later
                         mysend(sock, json.dumps(
                             {"action": "login", "status": "duplicate"}))
                         print(name + ' duplicate login attempt')
@@ -79,7 +70,6 @@ class Server:
     def logout(self, sock):
         # remove sock from all lists
         name = self.logged_sock2name[sock]
-        # pkl.dump(self.indices[name], open(name + '.idx', 'wb'))
         del self.indices[name]
         del self.logged_name2sock[name]
         del self.logged_sock2name[sock]
@@ -114,8 +104,7 @@ class Server:
                     # "duplicate" means the room name has already been taken by others
                     msg = json.dumps(
                         {"action": "create", "status": "duplicate"})
-                else:
-                    print("something goes wrong with create function")
+
                 mysend(from_sock, msg)
             elif msg["action"] == "join":
                 room_name = msg["name"]
@@ -130,9 +119,6 @@ class Server:
                         {"action": "join", "status": "success","members":all_players})
                     for player in other_players:
                         to_sock = self.logged_name2sock[player]
-                        # status here means waiting for the game to start, may change later
-                        # action here may also be changed later
-                        print(player)
                         mysend(to_sock, json.dumps(
                             {"action": "pairing", "status": "waiting", "from": from_name}))
                 elif self.room.find_room(room_name) == False:
@@ -142,40 +128,12 @@ class Server:
                 else:
                     print("something goes wrong with join function")
                 mysend(from_sock, msg)
-# ==============================================================================
-# decide whether to set the game base on the number of players
-# ==============================================================================
-            # elif msg["action"] == "start the game":
-            #     player_num = len(self.room.room_members)
-            #     if player_num < 2:
-            #         msg = json.dumps(
-            #             {"action": "denied", "reason": "there must be over two players"})
-            #     elif player_num == 2:
-            #         msg = json.dumps(
-            #             {"action": "all set"})
-            #     elif player_num > 2:
-            #         msg = json.dumps(
-            #             {"action": "set the game"})
-
-# ==============================================================================
-# set the game
-# ==============================================================================
-            # elif msg["action"] == "set questions":
-            #     room_name = msg["from room"]
-            #     question = msg["question"]
-            #     right_answer = msg["answers"][0]
-            #     wrong_answers = msg["answers"][1:]
-            #     self.room.set_question(room_name, question, right_answer, wrong_answers):
-            #     for player in self.room.room_members(room_name):
-            #         msg = json.dumps(
-            #             {"action": "all set"})
 
 # ==============================================================================
 # the game finally starts
 # ==============================================================================
 
             elif msg["action"] == "game start":
-                print("start game action received")
                 room_name = msg["from room"]
                 if len(self.room.room_members(room_name)) > 1:
                     question, answers_name, answers_hex = generate_question_and_answers(self.color_dict)
@@ -189,28 +147,22 @@ class Server:
                         msg = json.dumps({"action":"receive question","question":question,"answers_name":answers_name,"answers_hex":answers_hex})
                         to_sock = self.logged_name2sock[player]
                         mysend(to_sock, msg)
-                        print("question sent to "+player)
+    
                 else:
                     msg = json.dumps({"action":"game start","status":"denied"})
                     mysend(from_sock, msg)
 
-            
             elif msg["action"] == "choice made":
                 self.total_answers_recv += 1
                 from_name = self.logged_sock2name[from_sock]
                 room_name = msg["from room"]
-                print("answer msg received from "+from_name)
-                # the number of players making the right choice
-                # position = self.total_answers_recv % len(self.room.room_members(room_name))
-                # make sure this is the first player to answer
                 if msg["status"] == "right":
                     self.right_choice_made += 1
-                    if self.right_choice_made == 1:
+                    if self.right_choice_made == 1: # make sure this is the first player to answer
                         # add one score to the player
                         self.room.right_answer(from_name)
                         # make this guy the winner
                         self.winner = from_name
-                        print("we get a winner")
                     else:
                         self.loser_lst.append(from_name)
                 else:
@@ -220,7 +172,6 @@ class Server:
                 if self.total_answers_recv == len(self.room.room_members(room_name)):
                     # label this guy as the last one who make the choice
                     last_player = from_name
-                    print("the last player is "+last_player)
                     # get the highest_score
                     highest_score = 0
                     for player in self.room.room_members(room_name):
@@ -254,56 +205,33 @@ class Server:
                         if self.winner == last_player:
                             winner_msg = json.dumps(
                                 {"action": "able to start next round", "status": "win", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[self.winner], "top three":top_three_lst})
-                            print("msg sent to the last player")
                         else:
                             winner_msg = json.dumps(
                                 {"action": "round end", "status": "win", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[self.winner], "top three":top_three_lst})
 
                         winner_sock = self.logged_name2sock[self.winner]
                         mysend(winner_sock,winner_msg)
-                        print("msg has sent to winner "+self.winner)
-                    else:
-                        print("something goes wrong, or no winner at all")
+
                     # send the msg to other players
                     for player in self.loser_lst:
                         to_sock = self.logged_name2sock[player]
                         if player == last_player:
                             msg = json.dumps(
                                 {"action": "able to start next round", "status": "lose", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[player], "top three":top_three_lst})
-                            print("msg sent to the last player")
 
                         else:
                             msg = json.dumps(
                                 {"action": "round end", "status": "lose", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[player], "top three":top_three_lst})
                         mysend(to_sock,msg)
-                        print("msg has sent to "+player)
+                    # prepare for the next round
                     self.winner = ""
                     self.loser_lst = []
                     self.total_answers_recv=0
                     self.right_choice_made=0
-                        
-
-
-                
-
-
-
-
-                
-
-
-            
-
-                
-
-                
-        
+    
         else:
             # client died unexpectedly
             self.logout(from_sock)
-
-
-
 
     def run(self):
         print('starting game server...')
@@ -322,7 +250,6 @@ class Server:
                 # new player request
                 sock, address = self.server.accept()
                 self.new_player(sock)
-
 
 def main():
     server = Server()
