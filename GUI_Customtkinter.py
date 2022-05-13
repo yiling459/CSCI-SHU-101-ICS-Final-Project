@@ -925,7 +925,7 @@ class GUI:
             customtkinter.CTkLabel(
                 master = self.window,
                 text_color = "#000000",
-                text = top_three_lst[0],
+                text = str(top_three_lst[0]),
                 text_font= ("Montserrat Alternates SemiBold", 120),
                 bg_color="#FFFFFF"
                 ).place(x=530,y=190,anchor="nw") 
@@ -942,19 +942,22 @@ class GUI:
     def others_ranking_animation(self,stop_place,x,second_y,third_y,step,ranking_second,ranking_third,interval_time,top_three_lst):
         if x == stop_place:
             # create 2nd player label
+            print(top_three_lst[1],top_three_lst[2])
             customtkinter.CTkLabel(
                 master = self.window,
                 text_color = "#FFFFFF",
-                text = top_three_lst[1],
-                text_font= ("Montserrat Alternates SemiBold", 96)
+                text = str(top_three_lst[1]),
+                text_font= ("Montserrat Alternates SemiBold", 96),
+                bg_color=self.color_background
                 ).place(x=530,y=460,anchor="nw") 
             
             # create 3rd player label
             customtkinter.CTkLabel(
                 master = self.window,
                 text_color = "#FFFFFF",
-                text = top_three_lst[2],
+                text = str(top_three_lst[2]),
                 text_font= ("Montserrat Alternates SemiBold", 96),
+                bg_color=self.color_background
                 ).place(x=530,y=620,anchor="nw") 
         else:
             # print("enter the loop")
