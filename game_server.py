@@ -17,7 +17,7 @@ class Server:
         self.all_sockets = []
         self.room = room.Room()
         self.loser_lst = []
-        self.winner = []
+        self.winner = ""
         # start server
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(SERVER)
@@ -173,7 +173,7 @@ class Server:
 # ==============================================================================
 # the game finally starts
 # ==============================================================================
-            # kick off means the game really begin
+
             elif msg["action"] == "game start":
                 print("start game action received")
                 room_name = msg["from room"]
@@ -183,7 +183,7 @@ class Server:
                         msg = json.dumps({"action":"game start", "status":"success"})
                         to_sock = self.logged_name2sock[player]
                         mysend(to_sock, msg)
-                    time.sleep(4)
+                    time.sleep(5)
                     print("now sending the question")
                     for player in self.room.room_members(room_name):
                         msg = json.dumps({"action":"receive question","question":question,"answers_name":answers_name,"answers_hex":answers_hex})
@@ -194,15 +194,6 @@ class Server:
                     msg = json.dumps({"action":"game start","status":"denied"})
                     mysend(from_sock, msg)
 
-
-                
-                    
-
-            # elif msg["action"] == "kick off":
-            #     question, answers_name, answers_hex = generate_question_and_answers(self.color_dict)
-            #     msg = json.dumps(
-            #             {"action": "game playing", "question": question,"answers_name":answers_name,"answers_hex":answers_hex})
-            #     mysend(from_sock, msg)
             
             elif msg["action"] == "choice made":
                 self.total_answers_recv += 1
@@ -218,7 +209,7 @@ class Server:
                         # add one score to the player
                         self.room.right_answer(from_name)
                         # make this guy the winner
-                        self.winner = [from_name]
+                        self.winner = from_name
                         print("we get a winner")
                     else:
                         self.loser_lst.append(from_name)
@@ -242,20 +233,35 @@ class Server:
                         player_score = self.room.members[player]
                         if player_score == highest_score:
                             top_player_lst.append(player)
+                    
+                    # get the top three players for the last page
+                    sorted_player_lst = []
+                    sorted_values = sorted(self.room.members.values())
+                    sorted_values.reverse
+                    for i in sorted_values:
+                        for k in self.room.members.keys():
+                            if self.room.members[k] == i:
+                                if k not in sorted_player_lst:
+                                    sorted_player_lst.append(k)
+                                    break
+                    if len(sorted_player_lst) == 2:
+                        top_three_lst = sorted_player_lst + [""]
+                    else:
+                        top_three_lst = sorted_player_lst[:3]
+
                     # send the msg to the winner, if there's any
-                    if len(self.winner) == 1: 
-                        if self.winner[0] == last_player:
+                    if len(self.winner) > 0: 
+                        if self.winner == last_player:
                             winner_msg = json.dumps(
-                                {"action": "able to start next round", "status": "win", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[self.winner[0]]})
+                                {"action": "able to start next round", "status": "win", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[self.winner], "top three":top_three_lst})
                             print("msg sent to the last player")
                         else:
                             winner_msg = json.dumps(
-                                {"action": "round end", "status": "win", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[self.winner[0]]})
+                                {"action": "round end", "status": "win", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[self.winner], "top three":top_three_lst})
 
-                        winner_sock = self.logged_name2sock[self.winner[0]]
+                        winner_sock = self.logged_name2sock[self.winner]
                         mysend(winner_sock,winner_msg)
-                        print("msg has sent to winner "+self.winner[0])
-                        self.winner = []
+                        print("msg has sent to winner "+self.winner)
                     else:
                         print("something goes wrong, or no winner at all")
                     # send the msg to other players
@@ -263,14 +269,15 @@ class Server:
                         to_sock = self.logged_name2sock[player]
                         if player == last_player:
                             msg = json.dumps(
-                                {"action": "able to start next round", "status": "lose", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[player]})
+                                {"action": "able to start next round", "status": "lose", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[player], "top three":top_three_lst})
                             print("msg sent to the last player")
 
                         else:
                             msg = json.dumps(
-                                {"action": "round end", "status": "lose", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[player]})
+                                {"action": "round end", "status": "lose", "top players":top_player_lst, "top score": highest_score, "player score":self.room.members[player], "top three":top_three_lst})
                         mysend(to_sock,msg)
                         print("msg has sent to "+player)
+                    self.winner = ""
                     self.loser_lst = []
                     self.total_answers_recv=0
                     self.right_choice_made=0

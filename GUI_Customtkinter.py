@@ -633,15 +633,18 @@ class GUI:
             # self.response = json.loads(self.recv())
             print("now the label is get response")
             # current_response = self.response
-            # print(self.response)
+            print(self.response)
             if self.response["action"] == "round end":
                 top_player = " & ".join(self.response["top players"])
                 top_score = self.response["top score"]
                 player_score = self.response["player score"]
                 print("you are not the last one to make choice")
                 if self.round_num == 5:
-                    self.player_ranking_page()
+                    top_three_lst = self.response["top three"]
+                    print("top_three_lst")
+                    self.player_ranking_page(top_three_lst)
                 else:
+                    print("enter new round starter")
                     self.new_round_starter(top_player,top_score,player_score)
                 # self.new_round_starter(top_player,top_score,player_score)
             elif self.response["action"] == "able to start next round":
@@ -651,14 +654,15 @@ class GUI:
                 top_score = self.response["top score"]
                 player_score = self.response["player score"]
                 if self.round_num < 5:
-                    
                     self.send_game_start_msg()
                     print("now enter the billboard")
                     print("you are the last one")
                     self.new_round_starter(top_player,top_score,player_score)
 
                 elif self.round_num == 5:
-                    self.player_ranking_page()
+                    top_three_lst = self.response["top three"]
+                    print(top_three_lst)
+                    self.player_ranking_page(top_three_lst)
 
             else:
                 answer_button.after(10,lambda: self.change_button_color(answer_button,label))
@@ -801,7 +805,7 @@ class GUI:
 
 
 
-    def player_ranking_page(self):
+    def player_ranking_page(self,top_three_lst=["First","Second","Third"]):
         # create the CTKcanvas
         canvas = customtkinter.CTkCanvas(self.window,
                                         bg = "#FFFFFF",
@@ -822,17 +826,21 @@ class GUI:
         ranking_second_image = tkinter.PhotoImage(file = relative_to_assets("ranking_second.png"))
         ranking_third_image = tkinter.PhotoImage(file = relative_to_assets("ranking_third.png"))
         first_x = 1200
-        first_stop_place = 230
+        first_stop_place = 220
         first_step = -10
 
         second_x = -290
-        second_stop_place = 0
+        second_stop_place = 10
         second_step = 10
 
         third_x = -290
-        third_stop_place = 0
+        third_stop_place = 10
         third_step = 10
 
+        stop_place_lst = [first_stop_place,second_stop_place,third_stop_place]
+        x_lst = [first_x,second_x,third_x]
+        y_lst = [165,484,633]
+        step_lst = [first_step,second_step,third_step]
         interval_time = 10
         
         ranking_first = customtkinter.CTkButton(
@@ -844,7 +852,7 @@ class GUI:
             text=""
             )
         ranking_first.place(x=first_x,y=165,anchor="nw")
-        self.window.after(interval_time,lambda: self.ranking_animation(first_stop_place,first_x,165,first_step,ranking_first,interval_time))
+        
 
         ranking_second = customtkinter.CTkButton(
             master=self.window,
@@ -855,7 +863,7 @@ class GUI:
             text=""
             )
         ranking_second.place(x=second_x,y=484,anchor="nw")
-        self.window.after(interval_time,lambda: self.ranking_animation(second_stop_place,second_x,484,second_step,ranking_second,interval_time))
+        # self.window.after(interval_time,lambda: self.first_ranking_animation(second_stop_place,second_x,484,second_step,ranking_second,interval_time))
 
         ranking_third = customtkinter.CTkButton(
             master=self.window,
@@ -866,46 +874,95 @@ class GUI:
             text=""
             )
         ranking_third.place(x=third_x,y=633,anchor="nw")
-        self.window.after(interval_time,lambda: self.ranking_animation(third_stop_place,third_x,633,third_step,ranking_third,interval_time))
+        # self.window.after(interval_time,lambda: self.first_ranking_animation(third_stop_place,third_x,633,third_step,ranking_third,interval_time))
+        # ranking_second.after(interval_time,self.others_ranking_animation(second_stop_place,second_x,484,633,second_step,ranking_second,ranking_third,interval_time))
         
-        # create 1st player label
-        round_number = customtkinter.CTkLabel(
-            master = self.window,
-            text_color = "#FFFFFF",
-            text = "Benz",
-            text_font= ("Montserrat Alternates SemiBold", 120),
-            )
-        round_number.place(x=500,y=190,anchor="nw") 
+        ranking_first.after(interval_time,lambda: self.first_ranking_animation(stop_place_lst,x_lst,y_lst,step_lst,[ranking_first,ranking_second,ranking_third],interval_time,top_three_lst))
+
+        # # create 1st player label
+        # round_number = customtkinter.CTkLabel(
+        #     master = self.window,
+        #     text_color = "#000000",
+        #     text = "Benz",
+        #     text_font= ("Montserrat Alternates SemiBold", 120),
+        #     bg_color="#FFFFFF"
+        #     )
+        # round_number.place(x=500,y=190,anchor="nw") 
         
-        # create 2nd player label
-        round_number = customtkinter.CTkLabel(
-            master = self.window,
-            text_color = "#FFFFFF",
-            text = "Benz",
-            text_font= ("Montserrat Alternates SemiBold", 96),
-            )
-        round_number.place(x=530,y=450,anchor="nw") 
+        # # create 2nd player label
+        # round_number = customtkinter.CTkLabel(
+        #     master = self.window,
+        #     text_color = "#FFFFFF",
+        #     text = "Benz",
+        #     text_font= ("Montserrat Alternates SemiBold", 96),
+        #     )
+        # round_number.place(x=530,y=450,anchor="nw") 
         
-        # create 3rd player label
-        round_number = customtkinter.CTkLabel(
-            master = self.window,
-            text_color = "#FFFFFF",
-            text = "Benz",
-            text_font= ("Montserrat Alternates SemiBold", 96),
-            )
-        round_number.place(x=530,y=600,anchor="nw") 
+        # # create 3rd player label
+        # round_number = customtkinter.CTkLabel(
+        #     master = self.window,
+        #     text_color = "#FFFFFF",
+        #     text = "Benz",
+        #     text_font= ("Montserrat Alternates SemiBold", 96),
+        #     )
+        # round_number.place(x=530,y=600,anchor="nw") 
         
         self.window.mainloop()   
 
-    def ranking_animation(self,stop_place,x,y,step,ranking,interval_time):
-        if x == stop_place:
+    # def ranking_animation(self,stop_place,x,y,step,ranking,interval_time):
+    #     if x == stop_place:
+    #         pass
+    #     else:
+    #         print("enter the loop")
+    #         # ranking_first_image = tkinter.PhotoImage(file = relative_to_assets("ranking_first.png"))
+    #         ranking.place(x=x,y=y,anchor="nw")
+    #         self.window.after(interval_time,lambda: self.ranking_animation(stop_place,x+step,y,step,ranking,interval_time))
+    
+    def first_ranking_animation(self,stop_place:list,x:list,y:list,step:list,ranking:list,interval_time,top_three_lst):
+        if x[0] == stop_place[0]:
+            # create 1st player label
+            print(top_three_lst)
+            customtkinter.CTkLabel(
+                master = self.window,
+                text_color = "#000000",
+                text = top_three_lst[0],
+                text_font= ("Montserrat Alternates SemiBold", 120),
+                bg_color="#FFFFFF"
+                ).place(x=530,y=190,anchor="nw") 
 
-            pass
+            self.others_ranking_animation(stop_place[1],x[1],y[1],y[2],step[1],ranking[1],ranking[2],interval_time,top_three_lst)
+
         else:
-            print("enter the loop")
+            # print("enter the loop")
             # ranking_first_image = tkinter.PhotoImage(file = relative_to_assets("ranking_first.png"))
-            ranking.place(x=x,y=y,anchor="nw")
-            self.window.after(interval_time,lambda: self.ranking_animation(stop_place,x+step,y,step,ranking,interval_time))
+            x[0] += step[0]
+            ranking[0].place(x=x[0],y=y[0],anchor="nw")
+            ranking[0].after(interval_time,lambda: self.first_ranking_animation(stop_place,x,y,step,ranking,interval_time,top_three_lst))
+    
+    def others_ranking_animation(self,stop_place,x,second_y,third_y,step,ranking_second,ranking_third,interval_time,top_three_lst):
+        if x == stop_place:
+            # create 2nd player label
+            customtkinter.CTkLabel(
+                master = self.window,
+                text_color = "#FFFFFF",
+                text = top_three_lst[1],
+                text_font= ("Montserrat Alternates SemiBold", 96)
+                ).place(x=530,y=460,anchor="nw") 
+            
+            # create 3rd player label
+            customtkinter.CTkLabel(
+                master = self.window,
+                text_color = "#FFFFFF",
+                text = top_three_lst[2],
+                text_font= ("Montserrat Alternates SemiBold", 96),
+                ).place(x=530,y=620,anchor="nw") 
+        else:
+            # print("enter the loop")
+            # ranking_first_image = tkinter.PhotoImage(file = relative_to_assets("ranking_first.png"))
+            ranking_second.place(x=x,y=second_y,anchor="nw")
+            ranking_third.place(x=x,y=third_y,anchor="nw")
+            ranking_second.after(interval_time,lambda: self.others_ranking_animation(stop_place,x+step,second_y,third_y,step,ranking_second,ranking_third,interval_time,top_three_lst))
+    
         
 
 
@@ -941,6 +998,6 @@ if __name__ == "__main__":
     # g.choose_identity_page()
     # g.game_rule_page()
     # g.play_game_page()
-    g.billboard_page()
+    # g.billboard_page()
     # g.play()
-    # g.player_ranking_page()
+    g.player_ranking_page()
