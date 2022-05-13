@@ -54,8 +54,6 @@ class PlayerSM:
             self.out_msg += 'Something goes wrong. Fail to create the room.'
             return(False)
 
-    # def disconnect(self):
-
     def proc(self, my_action, room_reply):
         # my_action here replaces my_msg
         self.out_msg = ''
@@ -111,11 +109,6 @@ class PlayerSM:
             elif len(room_reply) > 0:
                 if room_reply['action'] == 'all set':
                     self.state = S_PLAYING
-
-#==============================================================================
-# Finally, the game can start!
-#==============================================================================
-        # elif self.state == S_PLAYING:
 
 
 

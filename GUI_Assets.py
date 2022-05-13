@@ -98,21 +98,6 @@ def labeled_entry(master, label_text, entry_color, entry_text_color):
     entry_frame.pack(padx=10,pady=10)
     return entry
 
-# def long_entry(master, bg_color, entry_color, entry_text_color):
-#     entry = customtkinter.CTkEntry(
-#         master=master,
-#         bg_color=bg_color,
-#         fg_color=entry_color,
-#         justify=tkinter.CENTER,
-#         text_font=("Futura Medium", 16 * -1),
-#         text_color=entry_text_color,
-#         border_width=0,
-#         corner_radius=28,
-#         width=1020,
-#         height=56
-#         )
-#     entry.pack()
-#     return entry
 def thick_button(master, button_color, text, text_color):
     button = customtkinter.CTkButton(
         master = master,
@@ -131,31 +116,6 @@ def thick_button(master, button_color, text, text_color):
     button.pack(padx=10,pady=10,side = tkinter.LEFT)
     return button
 
-
-# def question_entry(master,frame_background_color,label_color,entry_color,entry_text_color):
-#     question_frame =  customtkinter.CTkFrame(
-#             master = master,
-#             bg_color=frame_background_color,
-#             fg_color=frame_background_color,
-#             corner_radius=0
-#             )
-#     entry_label = customtkinter.CTkLabel(
-#             master=question_frame,
-#             fg_color=frame_background_color,
-#             corner_radius=0,
-#             text="Type the question in the box",
-#             justify=tkinter.LEFT,
-#             text_font=("Futura Medium", 12 * -1),
-#             text_color=label_color
-#             )
-#     entry_label.pack(side=tkinter.TOP)
-#     entry=long_entry(question_frame,frame_background_color,entry_color,entry_text_color)
-#     entry.pack()
-#     # change the padding later
-#     question_frame.pack(padx=10,pady=10)
-#     return entry
-
-
 def question_label(master, text="question yeahyeahyeahyeahyeahyeah"):
     question = customtkinter.CTkLabel(
         master=master,
@@ -167,65 +127,6 @@ def question_label(master, text="question yeahyeahyeahyeahyeahyeah"):
         text_color="#000000"
         )
     question.pack()
-
-
-# a brutal way to write entries for answers
-# return a list
-# def answers_entry(master,frame_background_color,label_color,entry_colors:list,entry_text_colors:list):
-#     answers_frame = customtkinter.CTkFrame(
-#             master = master,
-#             bg_color=frame_background_color,
-#             fg_color=frame_background_color,
-#             corner_radius=0
-#             )
-#     entry_label = customtkinter.CTkLabel(
-#             master=answers_frame,
-#             fg_color=frame_background_color,
-#             corner_radius=0,
-#             text="Options",
-#             justify=tkinter.LEFT,
-#             text_font=("Futura Medium", 12 * -1),
-#             text_color=label_color
-#             )
-#     entry_label.pack(side=tkinter.TOP)
-#     entry_1 = long_entry(answers_frame,frame_background_color,entry_colors[0],entry_text_colors[0])
-#     entry_1.pack(padx=0,pady=10)
-#     entry_2 = long_entry(answers_frame,frame_background_color,entry_colors[1],entry_text_colors[1])
-#     entry_2.pack(padx=0,pady=10)
-#     entry_3 = long_entry(answers_frame,frame_background_color,entry_colors[2],entry_text_colors[2])
-#     entry_3.pack(padx=0,pady=10)
-#     entry_4 = long_entry(answers_frame,frame_background_color,entry_colors[3],entry_text_colors[3])
-#     entry_4.pack(padx=0,pady=10)
-
-#     return [entry_1, entry_2, entry_3, entry_4]
-
-#use loop to write entries for answers
-def answers_entry(master,frame_background_color,label_color,entry_colors:list,entry_text_colors:list):
-    entry_1,entry_2,entry_3,entry_4=None,None,None,None
-    entry_lst=[entry_1,entry_2,entry_3,entry_4]
-    answers_frame = customtkinter.CTkFrame(
-            master = master,
-            bg_color=frame_background_color,
-            fg_color=frame_background_color,
-            corner_radius=0
-            )
-    entry_label = customtkinter.CTkLabel(
-            master=answers_frame,
-            fg_color=frame_background_color,
-            corner_radius=0,
-            text="Options",
-            justify=tkinter.LEFT,
-            text_font=("Futura Medium", 12 * -1),
-            text_color=label_color
-            )
-    entry_label.pack(side=tkinter.TOP)
-    for entry in entry_lst:
-        idx=0
-        entry = long_entry(answers_frame,frame_background_color,entry_colors[idx],entry_text_colors[idx])
-        entry.pack(padx=0,pady=10)
-        idx+=1
-    
-    return entry_lst
 
 
     
