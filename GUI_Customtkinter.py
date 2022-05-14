@@ -776,6 +776,6 @@ if __name__ == "__main__":
     # g.choose_identity_page()
     # g.game_rule_page()
     # g.play_game_page()
-    # g.billboard_page()
+    g.billboard_page()
     # g.play()
-    g.player_ranking_page()
+    # g.player_ranking_page()
